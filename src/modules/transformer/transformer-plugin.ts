@@ -1,9 +1,7 @@
-import { codeFrameColumns } from "@babel/code-frame";
 import { Visitor } from "@babel/core";
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { isInteger } from "lodash";
-import { ASTNode } from "../types/ast";
 
 type SupportedNodeType = t.NumericLiteral | t.Expression;
 
@@ -17,7 +15,7 @@ function repeatObject<T>(obj: T, times: number): T[] {
 }
 
 function buildNodeByPath(
-    path: NodePath<t.Expression | t.PrivateName | undefined | null>
+    path: NodePath<t.Expression | t.FunctionDeclaration | t.PrivateName | undefined | null>
 ): t.TSType {
     if (path.hasNode()) {
         if (path.isStringLiteral()) {
@@ -87,6 +85,12 @@ export default function () {
                     );
                 } else if (path.isTSTypeAliasDeclaration()) {
                     // do nothing
+                }
+                else if (path.isFunctionDeclaration()) {
+                    // const id = path.get('id');
+                    // const param = path.get('params');
+                    // const body = path.get('body');
+                    path.replaceWith(buildNodeByPath(path));
                 }
                 else {
                     throw path.buildCodeFrameError(`Statement ${path.type} is not implemented yet`);
