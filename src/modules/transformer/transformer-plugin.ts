@@ -53,27 +53,6 @@ function buildNodeByPath(
     throw path.buildCodeFrameError("path is empty");
 }
 
-const typeVisitor: Pick<Visitor<SupportedNodeType>, SupportedNodeTypeString> = {
-    NumericLiteral(path) {
-        const value = path.node.value;
-        if (!isInteger(value)) {
-            throw path.buildCodeFrameError(`not an non-negative integer`);
-        }
-        path.replaceWith(
-            t.tsTupleType(repeatObject(t.tsLiteralType(t.numericLiteral(1)), value))
-        );
-        path.skip();
-    },
-};
-
-function transformPath(
-    path: NodePath<Extract<ASTNode, SupportedNodeType> | undefined | null>
-) {
-    //@ts-expect-error FIXME idk why, maybe a better type will help
-    typeVisitor[path.type]?.(path);
-}
-
-
 export default function () {
     const visitor: { visitor: Visitor } = {
         visitor: {
