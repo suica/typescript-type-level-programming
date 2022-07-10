@@ -13,8 +13,7 @@ function repeatObject<T>(obj: T, times: number): T[] {
     if (times < 0 || !isInteger(times)) {
         times = 0;
     }
-    const res = Array.from({ length: times }).map((x) => obj);
-    return res;
+    return Array.from({ length: times }).map((x) => obj);
 }
 
 function buildNodeByPath(
@@ -65,7 +64,6 @@ const typeVisitor: Pick<Visitor<SupportedNodeType>, SupportedNodeTypeString> = {
         );
         path.skip();
     },
-    // Expression() {},
 };
 
 function transformPath(
@@ -108,12 +106,6 @@ export default function () {
                             }
                         })
                     );
-                    path.traverse({
-                        NumericLiteral(path) {
-                            transformPath(path);
-                            path.skip();
-                        },
-                    });
                 } else if (path.isTSTypeAliasDeclaration()) {
                     // do nothing
                 }
