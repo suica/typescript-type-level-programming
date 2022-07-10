@@ -26,7 +26,7 @@ describe("transpiler", () => {
       `type a = [1];\ntype b = [1, 1];\ntype c = [...a, ...b];`
     );
   });
-  it.skip("should work for simple recursive function", () => {
+  it("should work for simple recursive function", () => {
     expect(
       transpileHelper(`
     function fib(x:number){

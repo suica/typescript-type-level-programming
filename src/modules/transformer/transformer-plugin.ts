@@ -79,43 +79,49 @@ function transformPath(
 export default function () {
     const visitor: { visitor: Visitor } = {
         visitor: {
-            VariableDeclaration(path) {
-                if (path.node.kind === "var" || path.node.kind === "let") {
-                    throw path.buildCodeFrameError(
-                        "cannot declare variables using let or var"
-                    );
-                }
-                path.replaceWithMultiple(
-                    path.get("declarations").map((x) => {
-                        if (t.isIdentifier(x.node.id)) {
-                            const init = x.get("init");
-                            if (init) {
-                                return t.tSTypeAliasDeclaration(
-                                    x.node.id,
-                                    null,
-                                    buildNodeByPath(init)
-                                );
+            Statement(path) {
+                if (path.isVariableDeclaration()) {
+                    if (path.node.kind === "var" || path.node.kind === "let") {
+                        throw path.buildCodeFrameError(
+                            "cannot declare variables using let or var"
+                        );
+                    }
+                    path.replaceWithMultiple(
+                        path.get("declarations").map((x) => {
+                            if (t.isIdentifier(x.node.id)) {
+                                const init = x.get("init");
+                                if (init) {
+                                    return t.tSTypeAliasDeclaration(
+                                        x.node.id,
+                                        null,
+                                        buildNodeByPath(init)
+                                    );
+                                } else {
+                                    throw x.buildCodeFrameError(
+                                        "variables declared with const must be initialized"
+                                    );
+                                }
                             } else {
                                 throw x.buildCodeFrameError(
-                                    "variables declared with const must be initialized"
+                                    `the left hand side of variable declaration should be an identifier, but ${x.node.id.type} found`
                                 );
                             }
-                        } else {
-                            throw x.buildCodeFrameError(
-                                `the left hand side of variable declaration should be an identifier, but ${x.node.id.type} found`
-                            );
-                        }
-                    })
-                );
-                path.traverse({
-                    NumericLiteral(path) {
-                        transformPath(path);
-                        path.skip();
-                    },
-                });
-
+                        })
+                    );
+                    path.traverse({
+                        NumericLiteral(path) {
+                            transformPath(path);
+                            path.skip();
+                        },
+                    });
+                } else if (path.isTSTypeAliasDeclaration()) {
+                    // do nothing
+                }
+                else {
+                    throw path.buildCodeFrameError(`Statement ${path.type} is not implemented yet`);
+                }
                 path.skip();
-            },
+            }
         }
     }
     return visitor;
