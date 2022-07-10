@@ -1,4 +1,3 @@
-import { assert } from "console";
 import { parseTS } from "./parsing";
 
 describe("utils-parsing", () => {
