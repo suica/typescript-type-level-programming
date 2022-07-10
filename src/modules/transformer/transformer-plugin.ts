@@ -1,18 +1,7 @@
 import { Visitor } from "@babel/core";
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { isInteger } from "lodash";
-
-type SupportedNodeType = t.NumericLiteral | t.Expression;
-
-type SupportedNodeTypeString = SupportedNodeType["type"];
-
-function repeatObject<T>(obj: T, times: number): T[] {
-    if (times < 0 || !isInteger(times)) {
-        times = 0;
-    }
-    return Array.from({ length: times }).map((x) => obj);
-}
+import { repeatObject } from "../utils/general";
 
 function buildNodeByPath(
     path: NodePath<t.Expression | t.FunctionDeclaration | t.PrivateName | undefined | null>
