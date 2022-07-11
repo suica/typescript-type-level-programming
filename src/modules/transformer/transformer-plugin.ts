@@ -129,7 +129,9 @@ function buildStatement(path: NodePath<t.Statement>): t.Statement[] {
     return [path.node];
   } else if (path.isFunctionDeclaration()) {
     const id = path.get('id');
-    id.assertIdentifier();
+    if (!id.isIdentifier()) {
+      throw path.buildCodeFrameError('only identifiers are supported');
+    }
     const param = path.get('params');
     const body = path.get('body');
     return [
