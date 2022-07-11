@@ -138,6 +138,13 @@ describe('transpiler', () => {
         const a = sub(1, 2);
     `)
     ).toBe(`type sub<x, y> = LTE<x, y> extends true ? [] : SUB<x, y>;\ntype a = sub<[1], [1, 1]>;`);
+
+    expect(transpileHelper(`
+      function fib(x:number){
+        return x<=1 ? x : fib(x-1) + fib(x-2);
+      }
+    `)).toBe(`type fib<x> = LTE<x, [1]> extends true ? x : [...fib<SUB<x, [1]>>, ...fib<SUB<x, [1, 1]>>];`)
+
   });
 
   it.skip('should work for simple recursive function', () => {
