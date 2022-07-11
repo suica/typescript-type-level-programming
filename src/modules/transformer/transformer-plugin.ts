@@ -74,7 +74,6 @@ function buildTsTypeNodeByPath(
       } else {
         throw callee.buildCodeFrameError('only expression it supported');
       }
-      throw 1;
     } else {
       throw path.buildCodeFrameError(
         `handler of ${path.type} is not implemented`
