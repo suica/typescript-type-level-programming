@@ -3,9 +3,15 @@ import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import { repeatObject } from '../utils/general';
 
-function buildNodeByPath(
+function buildTsTypeNodeByPath(
   path: NodePath<
-    t.Expression | t.FunctionDeclaration | t.PrivateName | undefined | null
+    | t.Expression
+    | t.FunctionDeclaration
+    | t.PrivateName
+    | t.BlockStatement
+    | t.ReturnStatement
+    | undefined
+    | null
   >
 ): t.TSType {
   if (path.hasNode()) {
@@ -25,14 +31,50 @@ function buildNodeByPath(
       const right = path.get('right');
       if (path.node.operator === '+') {
         return t.tsTupleType([
-          t.tsRestType(buildNodeByPath(left)),
-          t.tsRestType(buildNodeByPath(right)),
+          t.tsRestType(buildTsTypeNodeByPath(left)),
+          t.tsRestType(buildTsTypeNodeByPath(right)),
         ]);
       } else {
         throw path.buildCodeFrameError(
           `operator ${path.node.operator} is not implemented yet`
         );
       }
+    } else if (path.isBlockStatement()) {
+      const body = path.get('body');
+      if (body.length === 0) {
+        // regard empty block as undefined
+        return t.tsUndefinedKeyword();
+      } else if (body.length === 1) {
+        const stat = body[0]!;
+        return buildTsTypeNodeByPath(stat);
+      } else {
+        throw path.buildCodeFrameError(
+          'block cannot have more statements than 1'
+        );
+      }
+    } else if (path.isReturnStatement()) {
+      return buildTsTypeNodeByPath(path.get('argument'));
+    } else if (path.isCallExpression()) {
+      const callee = path.get('callee');
+      const args = path.get('arguments') as NodePath<t.Expression>[];
+      if (callee.isExpression()) {
+        if (callee.isIdentifier()) {
+          const typeCallee = buildTsTypeNodeByPath(callee) as t.TSTypeReference;
+          const typeArgs = args.map((arg) => {
+            return buildTsTypeNodeByPath(arg);
+          });
+          if (typeArgs.length) {
+            typeCallee.typeParameters =
+              t.tsTypeParameterInstantiation(typeArgs);
+          }
+          return typeCallee;
+        } else {
+          throw callee.buildCodeFrameError('only identifier is supported');
+        }
+      } else {
+        throw callee.buildCodeFrameError('only expression it supported');
+      }
+      throw 1;
     } else {
       throw path.buildCodeFrameError(
         `handler of ${path.type} is not implemented`
@@ -42,50 +84,74 @@ function buildNodeByPath(
   throw path.buildCodeFrameError('path is empty');
 }
 
+export function buildTypeParamDeclaration(
+  paths: NodePath<t.Identifier | t.RestElement | t.Pattern>[]
+): t.TSTypeParameterDeclaration | null {
+  if (paths.length === 0) {
+    return null;
+  }
+  const h = paths as NodePath<t.Identifier>[];
+  return t.tsTypeParameterDeclaration(
+    h.map((x) => {
+      return t.tsTypeParameter(null, null, x.node.name);
+    })
+  );
+}
+
+function buildStatement(path: NodePath<t.Statement>): t.Statement[] {
+  if (path.isVariableDeclaration()) {
+    if (path.node.kind === 'var' || path.node.kind === 'let') {
+      throw path.buildCodeFrameError(
+        'cannot declare variables using let or var'
+      );
+    }
+    return path.get('declarations').map((x) => {
+      if (t.isIdentifier(x.node.id)) {
+        const init = x.get('init');
+        if (init) {
+          return t.tSTypeAliasDeclaration(
+            x.node.id,
+            null,
+            buildTsTypeNodeByPath(init)
+          );
+        } else {
+          throw x.buildCodeFrameError(
+            'variables declared with const must be initialized'
+          );
+        }
+      } else {
+        throw x.buildCodeFrameError(
+          `the left hand side of variable declaration should be an identifier, but ${x.node.id.type} found`
+        );
+      }
+    });
+  } else if (path.isTSTypeAliasDeclaration()) {
+    return [path.node];
+  } else if (path.isFunctionDeclaration()) {
+    const id = path.get('id');
+    id.assertIdentifier();
+    const param = path.get('params');
+    const body = path.get('body');
+    return [
+      t.tsTypeAliasDeclaration(
+        id.node,
+        buildTypeParamDeclaration(param),
+        buildTsTypeNodeByPath(body)
+      ),
+    ];
+  } else {
+    throw path.buildCodeFrameError(
+      `Statement ${path.type} is not implemented yet`
+    );
+  }
+}
+
 export default function () {
   const visitor: { visitor: Visitor } = {
     visitor: {
       Statement(path) {
-        if (path.isVariableDeclaration()) {
-          if (path.node.kind === 'var' || path.node.kind === 'let') {
-            throw path.buildCodeFrameError(
-              'cannot declare variables using let or var'
-            );
-          }
-          path.replaceWithMultiple(
-            path.get('declarations').map((x) => {
-              if (t.isIdentifier(x.node.id)) {
-                const init = x.get('init');
-                if (init) {
-                  return t.tSTypeAliasDeclaration(
-                    x.node.id,
-                    null,
-                    buildNodeByPath(init)
-                  );
-                } else {
-                  throw x.buildCodeFrameError(
-                    'variables declared with const must be initialized'
-                  );
-                }
-              } else {
-                throw x.buildCodeFrameError(
-                  `the left hand side of variable declaration should be an identifier, but ${x.node.id.type} found`
-                );
-              }
-            })
-          );
-        } else if (path.isTSTypeAliasDeclaration()) {
-          // do nothing
-        } else if (path.isFunctionDeclaration()) {
-          // const id = path.get('id');
-          // const param = path.get('params');
-          // const body = path.get('body');
-          path.replaceWith(buildNodeByPath(path));
-        } else {
-          throw path.buildCodeFrameError(
-            `Statement ${path.type} is not implemented yet`
-          );
-        }
+        const statements = buildStatement(path);
+        path.replaceWithMultiple(statements);
         path.skip();
       },
     },
