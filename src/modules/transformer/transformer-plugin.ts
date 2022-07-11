@@ -117,22 +117,6 @@ class Transformer {
       })
     );
   }
-
-  /**
-   * build the application of type-level function
-   */
-  buildTypeReference(callee): t.TSTypeReference {
-    const typeCallee = this.buildTsTypeNodeByPath(callee) as t.TSTypeReference;
-    const typeArgs = args.map((arg) => {
-      return this.buildTsTypeNodeByPath(arg);
-    });
-    if (typeArgs.length) {
-      typeCallee.typeParameters =
-        t.tsTypeParameterInstantiation(typeArgs);
-    }
-    return typeCallee;
-  }
-
   buildStatement(path: NodePath<t.Statement>): t.Statement[] {
     if (path.isVariableDeclaration()) {
       if (path.node.kind === 'var' || path.node.kind === 'let') {
