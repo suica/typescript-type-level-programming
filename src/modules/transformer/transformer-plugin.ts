@@ -1,6 +1,7 @@
 import { Visitor } from '@babel/core';
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
+import { HelperTypeEnum } from '../helpers/helpers.enum';
 import { repeatObject } from '../utils/general';
 
 function buildTsTypeNodeByPath(
@@ -148,13 +149,25 @@ function buildStatement(path: NodePath<t.Statement>): t.Statement[] {
 }
 
 export default function () {
-  const visitor: { visitor: Visitor } = {
+  const visitor: {
+    visitor: Visitor;
+    pre: () => void;
+    post: () => void;
+  } & ThisType<{
+    helperTypes: Partial<Record<HelperTypeEnum, boolean>>;
+  }> = {
+    pre() {
+      this.helperTypes = {};
+    },
     visitor: {
       Statement(path) {
-        const statements = buildStatement(path);
+        const statements = buildStatement.bind(this)(path);
         path.replaceWithMultiple(statements);
         path.skip();
       },
+    },
+    post() {
+      this.helperTypes = {};
     },
   };
   return visitor;
