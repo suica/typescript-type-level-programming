@@ -17,6 +17,7 @@ class Transformer {
       | t.PrivateName
       | t.BlockStatement
       | t.ReturnStatement
+      | t.IfStatement
       | undefined
       | null
     >
@@ -104,6 +105,11 @@ class Transformer {
         }
       } else if (path.isReturnStatement()) {
         return this.buildTsTypeNodeByPath(path.get('argument'));
+      } else if (path.isConditionalExpression()) {
+        const test = this.buildTsTypeNodeByPath(path.get('test'));
+        const consequent = this.buildTsTypeNodeByPath(path.get('consequent'));
+        const alternate = this.buildTsTypeNodeByPath(path.get('alternate'));
+        return t.tsConditionalType(test, t.tsLiteralType(t.booleanLiteral(true)), consequent, alternate);
       } else if (path.isCallExpression()) {
         const callee = path.get('callee');
         const args = path.get('arguments') as NodePath<t.Expression>[];

@@ -102,7 +102,7 @@ describe('transpiler', () => {
     );
   });
 
-  it('should work for single functions with single if statement', () => {
+  it.skip('should work for single functions with single if statement', () => {
 
     expect(transpileHelper(`
       function simple(x: number){
@@ -114,7 +114,7 @@ describe('transpiler', () => {
       }
       const a = simple(0);
       const b = simple(a);
-    `));
+    `)).toBe(``);
 
     expect(
       transpileHelper(`
@@ -129,7 +129,16 @@ describe('transpiler', () => {
     ).toBe(``);
   });
 
-  it.todo('should work for functions with ?! operators');
+  it('should work for functions with ?! operators', () => {
+    expect(
+      transpileHelper(`
+        function sub(x: number, y:number){
+          return x<=y ? 0 : x-y;
+        }
+        const a = sub(1, 2);
+    `)
+    ).toBe(`type sub<x, y> = LTE<x, y> extends true ? [] : SUB<x, y>;\ntype a = sub<[1], [1, 1]>;`);
+  });
 
   it.skip('should work for simple recursive function', () => {
     expect(

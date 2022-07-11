@@ -5,7 +5,6 @@ export enum HelperTypeEnum {
   EQUALS = 'EQUALS',
   NOT = 'NOT',
   AND = 'AND',
-
   OR = 'OR',
 }
 
