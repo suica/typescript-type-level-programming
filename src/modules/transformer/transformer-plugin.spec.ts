@@ -93,7 +93,7 @@ describe('transpiler', () => {
     );
   });
 
-  it.skip('should inject helper types for simple binary relation', () => {
+  it('should inject helper types for simple binary relation', () => {
     expect(transpileHelper(`const a = 1; const b = 2; const c = a<=b;`)).toBe(
       `type a = [1];\ntype b = [1, 1];\ntype c = LTE<a, b>;`
     );

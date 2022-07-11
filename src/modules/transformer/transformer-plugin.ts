@@ -2,7 +2,6 @@ import { Visitor } from '@babel/core';
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import { buildTypeApplicationNode } from '../helpers/helpers';
-import { buildTypeReference } from '../helpers/helpers';
 import { HelperTypeEnum } from '../helpers/helpers.enum';
 import { repeatObject } from '../utils/general';
 
@@ -47,6 +46,16 @@ class Transformer {
           ]);
         } else if (path.node.operator === '-') {
           return buildTypeApplicationNode(HelperTypeEnum.SUB, typeArgs);
+        } else if (path.node.operator === '<=') {
+          return buildTypeApplicationNode(HelperTypeEnum.LTE, typeArgs);
+        } else if (path.node.operator === '<') {
+          return buildTypeApplicationNode(HelperTypeEnum.LT, typeArgs);
+        } else if (path.node.operator === '===') {
+          return buildTypeApplicationNode(HelperTypeEnum.EQUALS, typeArgs);
+        } else if (path.node.operator === '!==') {
+          return buildTypeApplicationNode(HelperTypeEnum.NOT, [
+            buildTypeApplicationNode(HelperTypeEnum.EQUALS, typeArgs)
+          ]);
         } else {
           throw path.buildCodeFrameError(
             `operator ${path.node.operator} is not implemented yet`
