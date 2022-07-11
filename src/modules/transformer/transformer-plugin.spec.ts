@@ -26,34 +26,7 @@ describe('transpiler', () => {
     );
   });
 
-  it.skip('should work for simple binary operator', () => {
-    expect(transpileHelper(`const a = 1; const b = 2; const c = a + b;`)).toBe(
-      `type a = [1];\ntype b = [1, 1];\ntype c = [...a, ...b];`
-    );
-    expect(transpileHelper(`const a = 1; const b = 2; const c = a - b;`)).toBe(
-      `type a = [1];\ntype b = [1, 1];\ntype c = SUB<a, b>;`
-    );
-    expect(transpileHelper(`const a = 10; const b = 2; const c = a*b;`)).toBe(
-      `type a = [1];\ntype b = [1, 1];\ntype c = MULT<a, b>;`
-    );
-  });
-
-  it.skip('should work for simple binary relation', () => {
-    expect(transpileHelper(`const a = 1; const b = 2; const c = a<=b;`)).toBe(
-      `type a = [1];\ntype b = [1, 1];\ntype c = LTE<a, b>;`
-    );
-    expect(transpileHelper(`const a = 1; const b = 2; const c = a<b;`)).toBe(
-      `type a = [1];\ntype b = [1, 1];\ntype c = LT<a, b>;`
-    );
-    expect(transpileHelper(`const a = 1; const b = 2; const c = a===b;`)).toBe(
-      `type a = [1];\ntype b = [1, 1];\ntype c = EQUALS<a, b>;`
-    );
-    expect(transpileHelper(`const a = 1; const b = 2; const c = a!==b;`)).toBe(
-      `type a = [1];\ntype b = [1, 1];\ntype c = NOT<EQUALS<a, b>>;`
-    );
-  });
-
-  it('should work for simple function', () => {
+  it('should work for simple single-statement functions', () => {
     expect(
       transpileHelper(`
         function makeZero(){
@@ -85,6 +58,19 @@ describe('transpiler', () => {
 
     expect(
       transpileHelper(`
+      function add(x: number, y: number){
+        return x + y;
+      }
+      const b = add(1, 2);
+      const c = add(c, 2);
+      const d = add(b, c);
+    `)
+    ).toBe(
+      'type add<x, y> = [...x, ...y];\ntype b = add<[1], [1, 1]>;\ntype c = add<c, [1, 1]>;\ntype d = add<b, c>;'
+    );
+
+    expect(
+      transpileHelper(`
         function addOne(x: number){
           return x+1;
         }
@@ -96,19 +82,51 @@ describe('transpiler', () => {
     ).toBe(
       `type addOne<x> = [...x, ...[1]];\ntype makeZero = [];\ntype a = addOne<makeZero>;`
     );
-
-    // expect(
-    //   transpileHelper(`
-    //     function sub(x: number, y:number){
-    //       if(x<=y){
-    //         return 0;
-    //       }else{
-    //         return x-y;
-    //       }
-    //     }
-    // `)
-    // ).toBe(``);
   });
+
+  it.skip('should inject helper types for binary operator', () => {
+    expect(transpileHelper(`const a = 1; const b = 2; const c = a + b;`)).toBe(
+      `type a = [1];\ntype b = [1, 1];\ntype c = [...a, ...b];`
+    );
+    expect(transpileHelper(`const a = 1; const b = 2; const c = a - b;`)).toBe(
+      `type a = [1];\ntype b = [1, 1];\ntype c = SUB<a, b>;`
+    );
+    expect(transpileHelper(`const a = 10; const b = 2; const c = a*b;`)).toBe(
+      `type a = [1];\ntype b = [1, 1];\ntype c = MULT<a, b>;`
+    );
+  });
+
+  it.skip('should inject helper types for simple binary relation', () => {
+    expect(transpileHelper(`const a = 1; const b = 2; const c = a<=b;`)).toBe(
+      `type a = [1];\ntype b = [1, 1];\ntype c = LTE<a, b>;`
+    );
+    expect(transpileHelper(`const a = 1; const b = 2; const c = a<b;`)).toBe(
+      `type a = [1];\ntype b = [1, 1];\ntype c = LT<a, b>;`
+    );
+    expect(transpileHelper(`const a = 1; const b = 2; const c = a===b;`)).toBe(
+      `type a = [1];\ntype b = [1, 1];\ntype c = EQUALS<a, b>;`
+    );
+    expect(transpileHelper(`const a = 1; const b = 2; const c = a!==b;`)).toBe(
+      `type a = [1];\ntype b = [1, 1];\ntype c = NOT<EQUALS<a, b>>;`
+    );
+  });
+
+  it.skip('should work for single functions with single if statement', () => {
+    expect(
+      transpileHelper(`
+        function sub(x: number, y:number){
+          if(x<=y){
+            return 0;
+          }else{
+            return x-y;
+          }
+        }
+    `)
+    ).toBe(``);
+  });
+
+  it.todo('should work for functions with ?! operators');
+
   it.skip('should work for simple recursive function', () => {
     expect(
       transpileHelper(`
