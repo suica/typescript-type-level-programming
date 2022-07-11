@@ -1,3 +1,3 @@
-describe("utils-generator", () => {
-  it.todo("should generate ts code");
+describe('utils-generator', () => {
+  it.todo('should generate ts code');
 });

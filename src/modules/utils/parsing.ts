@@ -1,8 +1,8 @@
-import { parse } from "@babel/parser";
+import { parse } from '@babel/parser';
 
 export function parseTS(code: string) {
   return parse(code, {
-    plugins: [["typescript", {}]],
+    plugins: [['typescript', {}]],
   });
 }
 
