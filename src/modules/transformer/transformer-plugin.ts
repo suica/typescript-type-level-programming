@@ -1,6 +1,7 @@
 import { Visitor } from '@babel/core';
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
+import { buildTypeReference } from '../helpers/helpers';
 import { HelperTypeEnum } from '../helpers/helpers.enum';
 import { repeatObject } from '../utils/general';
 
@@ -40,6 +41,12 @@ class Transformer {
             t.tsRestType(this.buildTsTypeNodeByPath(left)),
             t.tsRestType(this.buildTsTypeNodeByPath(right)),
           ]);
+        } else if (path.node.operator === '-') {
+          const typeArgs = [left, right].map((arg) => {
+            return this.buildTsTypeNodeByPath(arg);
+          });
+          const callee = t.tsTypeReference(t.identifier('SUB'), t.tsTypeParameterInstantiation(typeArgs));
+          return callee;
         } else {
           throw path.buildCodeFrameError(
             `operator ${path.node.operator} is not implemented yet`
@@ -100,6 +107,21 @@ class Transformer {
         return t.tsTypeParameter(null, null, x.node.name);
       })
     );
+  }
+
+  /**
+   * build the application of type-level function
+   */
+  buildTypeReference(callee): t.TSTypeReference {
+    const typeCallee = this.buildTsTypeNodeByPath(callee) as t.TSTypeReference;
+    const typeArgs = args.map((arg) => {
+      return this.buildTsTypeNodeByPath(arg);
+    });
+    if (typeArgs.length) {
+      typeCallee.typeParameters =
+        t.tsTypeParameterInstantiation(typeArgs);
+    }
+    return typeCallee;
   }
 
   buildStatement(path: NodePath<t.Statement>): t.Statement[] {

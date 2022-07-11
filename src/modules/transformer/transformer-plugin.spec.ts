@@ -84,15 +84,12 @@ describe('transpiler', () => {
     );
   });
 
-  it.skip('should inject helper types for binary operator', () => {
+  it('should inject helper types for binary operator', () => {
     expect(transpileHelper(`const a = 1; const b = 2; const c = a + b;`)).toBe(
       `type a = [1];\ntype b = [1, 1];\ntype c = [...a, ...b];`
     );
     expect(transpileHelper(`const a = 1; const b = 2; const c = a - b;`)).toBe(
       `type a = [1];\ntype b = [1, 1];\ntype c = SUB<a, b>;`
-    );
-    expect(transpileHelper(`const a = 10; const b = 2; const c = a*b;`)).toBe(
-      `type a = [1];\ntype b = [1, 1];\ntype c = MULT<a, b>;`
     );
   });
 
