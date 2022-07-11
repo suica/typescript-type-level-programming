@@ -1,6 +1,7 @@
 import { Visitor } from '@babel/core';
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
+import { buildTypeApplicationNode } from '../helpers/helpers';
 import { buildTypeReference } from '../helpers/helpers';
 import { HelperTypeEnum } from '../helpers/helpers.enum';
 import { repeatObject } from '../utils/general';
@@ -36,17 +37,16 @@ class Transformer {
       } else if (path.isBinaryExpression()) {
         const left = path.get('left');
         const right = path.get('right');
+        const typeArgs = [left, right].map((arg) => {
+          return this.buildTsTypeNodeByPath(arg);
+        });
         if (path.node.operator === '+') {
           return t.tsTupleType([
             t.tsRestType(this.buildTsTypeNodeByPath(left)),
             t.tsRestType(this.buildTsTypeNodeByPath(right)),
           ]);
         } else if (path.node.operator === '-') {
-          const typeArgs = [left, right].map((arg) => {
-            return this.buildTsTypeNodeByPath(arg);
-          });
-          const callee = t.tsTypeReference(t.identifier('SUB'), t.tsTypeParameterInstantiation(typeArgs));
-          return callee;
+          return buildTypeApplicationNode(HelperTypeEnum.SUB, typeArgs);
         } else {
           throw path.buildCodeFrameError(
             `operator ${path.node.operator} is not implemented yet`
