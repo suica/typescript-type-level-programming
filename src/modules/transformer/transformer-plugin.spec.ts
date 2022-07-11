@@ -11,12 +11,6 @@ function transpileHelper(sourceCode: string) {
 }
 
 describe('transpiler', () => {
-  it.skip('should work for number literal', () => {
-    // TODO complete this case
-    expect(transpileHelper(`0;`)).toBe('[];');
-    expect(transpileHelper(`1;`)).toBe('[1];');
-    expect(transpileHelper(`10;`)).toBe('[1, 1, 1, 1, 1, 1, 1, 1, 1, 1];');
-  });
   it('should work for simple type declaration', () => {
     expect(transpileHelper(`const a = 0;`)).toBe('type a = [];');
     expect(transpileHelper(`const a = 1;`)).toBe('type a = [1];');
@@ -108,7 +102,20 @@ describe('transpiler', () => {
     );
   });
 
-  it.skip('should work for single functions with single if statement', () => {
+  it('should work for single functions with single if statement', () => {
+
+    expect(transpileHelper(`
+      function simple(x: number){
+        if(1<=x){
+          return x;
+        }else{
+          return 1;
+        }
+      }
+      const a = simple(0);
+      const b = simple(a);
+    `));
+
     expect(
       transpileHelper(`
         function sub(x: number, y:number){

@@ -48,14 +48,42 @@ class Transformer {
           return buildTypeApplicationNode(HelperTypeEnum.SUB, typeArgs);
         } else if (path.node.operator === '<=') {
           return buildTypeApplicationNode(HelperTypeEnum.LTE, typeArgs);
+        } else if (path.node.operator === '>') {
+          return buildTypeApplicationNode(HelperTypeEnum.NOT, [buildTypeApplicationNode(HelperTypeEnum.LTE, typeArgs)]);
         } else if (path.node.operator === '<') {
           return buildTypeApplicationNode(HelperTypeEnum.LT, typeArgs);
+        } else if (path.node.operator === '>=') {
+          return buildTypeApplicationNode(HelperTypeEnum.NOT, [buildTypeApplicationNode(HelperTypeEnum.LT, typeArgs)]);
         } else if (path.node.operator === '===') {
           return buildTypeApplicationNode(HelperTypeEnum.EQUALS, typeArgs);
         } else if (path.node.operator === '!==') {
           return buildTypeApplicationNode(HelperTypeEnum.NOT, [
             buildTypeApplicationNode(HelperTypeEnum.EQUALS, typeArgs)
           ]);
+        } else {
+          throw path.buildCodeFrameError(
+            `operator ${path.node.operator} is not implemented yet`
+          );
+        }
+      } else if (path.isLogicalExpression()) {
+        const left = path.get('left');
+        const right = path.get('right');
+        const typeArgs = [left, right].map((arg) => {
+          return this.buildTsTypeNodeByPath(arg);
+        });
+        if (path.node.operator === '&&') {
+          return buildTypeApplicationNode(HelperTypeEnum.AND, typeArgs);
+        } else if (path.node.operator === '||') {
+          return buildTypeApplicationNode(HelperTypeEnum.OR, typeArgs);
+        } else {
+          throw path.buildCodeFrameError(
+            `operator ${path.node.operator} is not implemented yet`
+          );
+        }
+      } else if (path.isUnaryExpression()) {
+        const typeArgs = [this.buildTsTypeNodeByPath(path.get('argument'))];
+        if (path.node.operator === '!') {
+          return buildTypeApplicationNode(HelperTypeEnum.NOT, typeArgs);
         } else {
           throw path.buildCodeFrameError(
             `operator ${path.node.operator} is not implemented yet`
