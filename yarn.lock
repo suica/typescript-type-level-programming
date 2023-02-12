@@ -3323,10 +3323,10 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@^4.8.0-dev.20220709:
-  version "4.8.0-dev.20220709"
-  resolved "https://registry.npmmirror.com/typescript/-/typescript-4.8.0-dev.20220709.tgz#6ba2904bc5cb4be125ed8a9214ccc9242b5825f0"
-  integrity sha512-SCga3Bj+6fGfJ8LkUxXtM/NbvH8CU/Yhz125UOjS6nVVQm3MzkfgnaqcYl0bRQimg7YVb5vixqhkOOjH1p4vGQ==
+typescript@5.0.0-beta:
+  version "5.0.0-beta"
+  resolved "http://registry.npm.baidu-int.com/typescript/-/typescript-5.0.0-beta.tgz#791fa95411d6ff64ee77d677ed1e6f32a2eaabaf"
+  integrity sha512-+SSabbSXG5mtF+QGdV9uXXt9Saq1cSyI6hSG7znhaLoquleJpnmfkwSxFngK9c2fWWi1W/263TuzXQOsIcdjjA==
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"
