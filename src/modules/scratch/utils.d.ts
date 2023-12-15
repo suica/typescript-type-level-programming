@@ -1,4 +1,5 @@
 import { type Expect } from '@type-challenges/utils';
+import { Omit } from 'lodash';
 export type NatConcept = number[];
 type __NatToNumericLiteralType<T extends NatConcept> = T['length'];
 export type ZERO = [];
@@ -103,7 +104,17 @@ type Eval<
 type EvalSingleStmt<
   env extends EnvConcept,
   expr extends ExprConcept,
-  __returns extends EnvConcept = expr extends { kind: 'empty' } ? env : never,
+  __returns extends EnvConcept = MatchCase<
+    [
+      [EQUALS<expr['kind'], 'empty'>, env],
+      [
+        EQUALS<expr['kind'], 'bind'>,
+        expr extends BindExprConcept
+          ? UpdateEnv<env, [Omit<expr, 'kind'>], []>
+          : never,
+      ],
+    ]
+  >,
 > = __returns;
 
 type _MatchBranch = [cond: boolean, result: any];
@@ -147,8 +158,8 @@ type EvalBinaryExpr<
 > = __returns;
 
 type TestValSingleStmt = [
-  Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmt>, _SampleEnv>>,
-  Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmt>, _SampleEnv>>,
+  Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmtConcept>, _SampleEnv>>,
+  Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmtConcept>, _SampleEnv>>,
 ];
 type ValueConcept = NatConcept | boolean;
 
@@ -184,9 +195,7 @@ type UpdateEnv<
   },
 > = __returns;
 
-type Stmt<T> = any;
-
-type SyntaxKind = 'IfStmt' | 'For' | 'Call';
+type SyntaxKind = ExprConcept['kind'];
 
 type BinaryExprConcept = {
   kind: 'BinaryOperator';
@@ -194,31 +203,33 @@ type BinaryExprConcept = {
   left: ExprConcept;
   right: ExprConcept;
 };
+type BindExprConcept = {
+  kind: 'bind';
+  name: string;
+  value: ValueConcept;
+};
+
+type IfStmtConcept = {
+  kind: 'IfStmt';
+  condition: ExprConcept;
+  alternate: ExprConcept[];
+};
+type EmptyStmtConcept = { kind: 'empty' };
 type ExprConcept =
   | BinaryExprConcept
-  | {
-      kind: 'IfStmt';
-      condition: ExprConcept;
-      alternate: ExprConcept[];
-    }
-  | {
-      kind: 'bind';
-    }
-  | {
-      kind: 'empty';
-      // has no effect on the env
-    };
+  | BindExprConcept
+  | EmptyStmtConcept
+  | IfStmtConcept;
 
-type EmptyStmt<__returns extends ExprConcept = { kind: 'empty' }> = __returns;
 type TempAnonymousLoop<
   env extends EnvConcept,
-  init extends ExprConcept = EmptyStmt,
-  test extends ExprConcept = EmptyStmt,
-  update extends ExprConcept = EmptyStmt,
-  body extends ExprConcept[] = [EmptyStmt],
+  init extends ExprConcept = EmptyStmtConcept,
+  test extends ExprConcept = EmptyStmtConcept,
+  update extends ExprConcept = EmptyStmtConcept,
+  body extends ExprConcept[] = [EmptyStmtConcept],
   __evaluated_test extends EnvConcept = Eval<env, test>,
   __return extends EnvConcept = env,
-> = EQUALS<init, EmptyStmt> extends true
+> = EQUALS<init, EmptyStmtConcept> extends true
   ? // no need to init, test first
     Eval<env, test> extends MakeEnv<
       infer __should_return,
@@ -227,10 +238,15 @@ type TempAnonymousLoop<
     >
     ? { stack: stack }
     : never
-  : TempAnonymousLoop<Eval<env, init>, EmptyStmt, test, update, body>;
+  : TempAnonymousLoop<Eval<env, init>, EmptyStmtConcept, test, update, body>;
 
 type _SampleEnv = MakeEnv<false, [{ name: 'i'; value: MakeNat<0> }]>;
-type C = TempAnonymousLoop<_SampleEnv, EmptyStmt, EmptyStmt, EmptyStmt>;
+type C = TempAnonymousLoop<
+  _SampleEnv,
+  EmptyStmtConcept,
+  EmptyStmtConcept,
+  EmptyStmtConcept
+>;
 
 // Select2Way<Eval<__init_env, test>, Eval<env, test>, Eval<env, update>>;
 
