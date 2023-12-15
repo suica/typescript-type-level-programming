@@ -20,7 +20,7 @@ export type Eval<
   env extends EnvConcept,
   expr extends ExprConcept[] | ExprConcept,
   _input extends ExprConcept[] = EnsureArr<expr>,
-  __result extends any = IsEmptyList<_input> extends true
+  __result extends EnvConcept = IsEmptyList<_input> extends true
     ? // no stmt, do nothing
       env
     : // get first element to process
@@ -117,6 +117,9 @@ type EvalBinaryExpr<
 type EvalIfStmt<
   env extends EnvConcept,
   expr extends IfStmtConcept,
-  __evaluated_condition = Eval<env, expr['test']>,
-  __returns extends EnvConcept = unknown,
+  __env_after_test extends EnvConcept = Eval<env, expr['test']>,
+  __test_value extends ValueConcept = boolean,
+  __returns extends EnvConcept = __test_value extends true
+    ? Eval<__env_after_test, expr['consequent']>
+    : Eval<__env_after_test, expr['alternate']>,
 > = __returns;
