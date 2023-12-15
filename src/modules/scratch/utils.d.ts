@@ -112,12 +112,10 @@ type EvalSingleStmt<
     : expr extends IfStmtConcept
     ? env
     : expr extends ValueExprConcept
-    ? env & {
-        trace?: 'value';
-      }
+    ? UpdateEnv<env, [], [expr['value']]>
     : expr extends IdentifierConcept
     ? UpdateEnv<env, [], [Lookup<env, expr['name']>]>
-    : { error: `not supported statement, found ${expr['kind']}` },
+    : never,
 > = __returns;
 
 type TestValSingleStmt = [
@@ -176,7 +174,10 @@ type EvalBinaryExpr<
         ]
       >
     : never,
-  __returns extends EnvConcept = UpdateEnv<env, [], [__evaluated_expr]>,
+  __returns extends EnvConcept = EvalSingleStmt<
+    env,
+    MakeValueExpr<__evaluated_expr>
+  >,
 > = __returns;
 
 type TestEvalBinaryExpr = [
