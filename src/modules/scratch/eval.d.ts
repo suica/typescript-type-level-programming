@@ -15,24 +15,27 @@ import {
   ExprConcept,
   IdentifierConcept,
   IfStmtConcept,
+  MakeIdentifier,
   MakeNat,
   MakeValueExpr,
   NatConcept,
   ValueLiteralConcept,
+  ZERO,
 } from './syntax/syntax';
-import { EnsureArr, MatchCase } from './utils/helper';
+import { MatchCase } from './utils/helper';
 import { Add, EQUALS, Lt, Lte, Sub } from './utils/nat';
 
 // TODO: test "return" state and decided whether to stop ?
 export type Eval<
   env extends EnvConcept,
-  expr extends ExprConcept[] | ExprConcept,
-  _input extends ExprConcept[] = EnsureArr<expr>,
-> = _input extends [
+  expr extends ExprConcept[],
+> = expr extends [
   infer head extends ExprConcept,
   ...infer tail extends ExprConcept[],
 ]
-  ? Eval<EvalSingleStmt<env, head>, tail>
+  ? EQUALS<head, ExprConcept> extends true
+    ? never
+    : Eval<EvalSingleStmt<env, head>, tail>
   : env;
 
 export type EvalSingleStmt<
@@ -75,15 +78,29 @@ type TestEvalBinaryExpr = [
 
 type A = Eval<
   _SampleEnv,
-  {
-    kind: 'IfStmt';
-    test: MakeValueExpr<true>;
-    consequent: [MakeValueExpr<MakeNat<1>>];
-    alternate: [MakeValueExpr<MakeNat<2>>];
-  }
+  [
+    {
+      kind: 'IfStmt';
+      test: MakeValueExpr<true>;
+      consequent: [MakeValueExpr<MakeNat<1>>];
+      alternate: [MakeValueExpr<MakeNat<2>>];
+    },
+  ]
 >;
 
 export type TestEvalSingleStmt = [
+  Expect<
+    EQUALS<ReadOffTempValue<Eval<_SampleEnv, [MakeIdentifier<'i'>]>>, ZERO>
+  >,
+  EvalSingleStmt<
+    _SampleEnv,
+    {
+      kind: 'BinaryOperator';
+      op: '+';
+      left: MakeValueExpr<MakeNat<1>>;
+      right: MakeValueExpr<MakeNat<2>>;
+    }
+  >,
   Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmtConcept>, _SampleEnv>>,
   Expect<
     EQUALS<
@@ -99,6 +116,20 @@ export type TestEvalSingleStmt = [
       UpdateEnv<_SampleEnv, [], [MakeNat<3>]>
     >
   >,
+  Expect<
+    EQUALS<
+      EvalSingleStmt<
+        _SampleEnv,
+        {
+          kind: 'BinaryOperator';
+          op: '+';
+          left: MakeIdentifier<'i'>;
+          right: MakeValueExpr<MakeNat<2>>;
+        }
+      >,
+      UpdateEnv<_SampleEnv, [], [MakeNat<2>]>
+    >
+  >,
 ];
 
 type EvalBinaryExpr<
@@ -111,17 +142,22 @@ type EvalBinaryExpr<
     expr['right'],
   ] extends [
     infer op extends BinaryExprConcept['op'],
-    infer __left extends __nat_literal_concept,
-    infer __right extends __nat_literal_concept,
+    infer __left extends ExprConcept,
+    infer __right extends ExprConcept,
   ]
-    ? MatchCase<
-        [
-          [EQUALS<op, '+'>, Add<__left['value'], __right['value']>],
-          [EQUALS<op, '-'>, Sub<__left['value'], __right['value']>],
-          [EQUALS<op, '<='>, Lte<__left['value'], __right['value']>],
-          [EQUALS<op, '<'>, Lt<__left['value'], __right['value']>],
-        ]
-      >
+    ? [
+        ReadOffTempValue<Eval<env, [__left]>>,
+        ReadOffTempValue<Eval<env, [__right]>>,
+      ] extends [infer l extends NatConcept, infer r extends NatConcept]
+      ? MatchCase<
+          [
+            [EQUALS<op, '+'>, Add<l, r>],
+            [EQUALS<op, '-'>, Sub<l, r>],
+            [EQUALS<op, '<='>, Lte<l, r>],
+            [EQUALS<op, '<'>, Lt<l, r>],
+          ]
+        >
+      : never
     : never,
 > = EvalSingleStmt<env, MakeValueExpr<__evaluated_expr>>;
 
@@ -151,7 +187,7 @@ type EvalAssignment<
   [
     {
       name: expr['left']['name'];
-      value: ReadOffTempValue<Eval<env, expr['right']>>;
+      value: ReadOffTempValue<Eval<env, [expr['right']]>>;
     },
   ],
   []
