@@ -146,4 +146,13 @@ type EvalIfStmt<env extends EnvConcept, expr extends IfStmtConcept> = EQUALS<
 type EvalAssignment<
   env extends EnvConcept,
   expr extends AssignmentConcept,
-> = env;
+> = UpdateEnv<
+  env,
+  [
+    {
+      name: expr['left']['name'];
+      value: ReadOffTempValue<Eval<env, expr['right']>>;
+    },
+  ],
+  []
+>;
