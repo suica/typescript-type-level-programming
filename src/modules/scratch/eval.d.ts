@@ -33,15 +33,15 @@ export type Eval<
   infer head extends ExprConcept,
   ...infer tail extends ExprConcept[],
 ]
-  ? EQUALS<head, ExprConcept> extends true // avoid invoking with ExprConcept
-    ? never
-    : Eval<EvalSingleStmt<env, head>, tail>
+  ? Eval<EvalSingleStmt<env, head>, tail>
   : env;
 
 export type EvalSingleStmt<
   env extends EnvConcept,
   expr extends ExprConcept,
-> = expr extends BindExprConcept
+> = EQUALS<expr, ExprConcept> extends true
+  ? never
+  : expr extends BindExprConcept
   ? UpdateEnv<env, [Omit<expr, 'kind'>], []>
   : expr extends EmptyStmtConcept
   ? env
@@ -165,15 +165,13 @@ type TestReadOffTempValue = [
   Expect<EQUALS<ReadOffTempValue<_SampleEnv>, MakeNat<1>>>,
 ];
 
-type EvalIfStmt<env extends EnvConcept, expr extends IfStmtConcept> = EQUALS<
-  EnvConcept,
-  env
-> extends true
-  ? never
-  : EvalSingleStmt<
-      env,
-      expr['test']
-    > extends infer __env_after_test extends EnvConcept
+type EvalIfStmt<
+  env extends EnvConcept,
+  expr extends IfStmtConcept,
+> = EvalSingleStmt<
+  env,
+  expr['test']
+> extends infer __env_after_test extends EnvConcept
   ? ReadOffTempValue<__env_after_test> extends true
     ? Eval<__env_after_test, expr['consequent']>
     : Eval<__env_after_test, expr['alternate']>
