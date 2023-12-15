@@ -1,5 +1,4 @@
 import { type Expect } from '@type-challenges/utils';
-import { Omit } from 'lodash';
 export type NatConcept = number[];
 type __NatToNumericLiteralType<T extends NatConcept> = T['length'];
 export type ZERO = [];
@@ -104,17 +103,15 @@ type Eval<
 type EvalSingleStmt<
   env extends EnvConcept,
   expr extends ExprConcept,
-  __returns extends EnvConcept = MatchCase<
-    [
-      [EQUALS<expr['kind'], 'empty'>, env],
-      [
-        EQUALS<expr['kind'], 'bind'>,
-        expr extends BindExprConcept
-          ? UpdateEnv<env, [Omit<expr, 'kind'>], []>
-          : never,
-      ],
-    ]
-  >,
+  __returns extends EnvConcept = expr extends BindExprConcept
+    ? UpdateEnv<env, [Omit<expr, 'kind'>], []>
+    : expr extends EmptyStmtConcept
+    ? env
+    : expr extends BinaryExprConcept
+    ? env
+    : expr extends IfStmtConcept
+    ? env
+    : { error: `not supported statement, found ${expr['kind']}` },
 > = __returns;
 
 type _MatchBranch = [cond: boolean, result: any];
