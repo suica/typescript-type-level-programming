@@ -43,40 +43,12 @@ export type EvalSingleStmt<
     : expr extends BinaryExprConcept
     ? EvalBinaryExpr<env, expr>
     : expr extends IfStmtConcept
-    ? env
+    ? EvalIfStmt<env, expr>
     : expr extends ValueLiteralConcept
     ? UpdateEnv<env, [], [expr['value']]>
     : expr extends IdentifierConcept
     ? UpdateEnv<env, [], [Lookup<env, expr['name']>]>
     : never,
-> = __returns;
-
-type EvalBinaryExpr<
-  env extends EnvConcept,
-  expr extends BinaryExprConcept,
-  __nat_literal_concept extends MakeValueExpr<NatConcept> = MakeValueExpr<NatConcept>,
-  __evaluated_expr extends ValueConcept = [
-    expr['op'],
-    expr['left'],
-    expr['right'],
-  ] extends [
-    infer op extends BinaryExprConcept['op'],
-    infer __left extends __nat_literal_concept,
-    infer __right extends __nat_literal_concept,
-  ]
-    ? MatchCase<
-        [
-          [EQUALS<op, '+'>, Add<__left['value'], __right['value']>],
-          [EQUALS<op, '-'>, Sub<__left['value'], __right['value']>],
-          [EQUALS<op, '<='>, Lte<__left['value'], __right['value']>],
-          [EQUALS<op, '<'>, Lt<__left['value'], __right['value']>],
-        ]
-      >
-    : never,
-  __returns extends EnvConcept = EvalSingleStmt<
-    env,
-    MakeValueExpr<__evaluated_expr>
-  >,
 > = __returns;
 
 type TestEvalBinaryExpr = [
@@ -113,3 +85,37 @@ export type TestEvalSingleStmt = [
     >
   >,
 ];
+
+type EvalBinaryExpr<
+  env extends EnvConcept,
+  expr extends BinaryExprConcept,
+  __nat_literal_concept extends MakeValueExpr<NatConcept> = MakeValueExpr<NatConcept>,
+  __evaluated_expr extends ValueConcept = [
+    expr['op'],
+    expr['left'],
+    expr['right'],
+  ] extends [
+    infer op extends BinaryExprConcept['op'],
+    infer __left extends __nat_literal_concept,
+    infer __right extends __nat_literal_concept,
+  ]
+    ? MatchCase<
+        [
+          [EQUALS<op, '+'>, Add<__left['value'], __right['value']>],
+          [EQUALS<op, '-'>, Sub<__left['value'], __right['value']>],
+          [EQUALS<op, '<='>, Lte<__left['value'], __right['value']>],
+          [EQUALS<op, '<'>, Lt<__left['value'], __right['value']>],
+        ]
+      >
+    : never,
+  __returns extends EnvConcept = EvalSingleStmt<
+    env,
+    MakeValueExpr<__evaluated_expr>
+  >,
+> = __returns;
+
+type EvalIfStmt<
+  env extends EnvConcept,
+  expr extends IfStmtConcept,
+  __returns extends EnvConcept = unknown,
+> = __returns;
