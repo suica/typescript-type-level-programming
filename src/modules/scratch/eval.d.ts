@@ -16,8 +16,6 @@ import {
 import { EnsureArr, IsEmptyList, MatchCase } from './utils/helper';
 import { Add, EQUALS, Lt, Lte, Sub } from './utils/nat';
 
-type NatLiteralConcept = MakeValueExpr<NatConcept>;
-
 export type Eval<
   env extends EnvConcept,
   expr extends ExprConcept[] | ExprConcept,
@@ -56,21 +54,22 @@ export type EvalSingleStmt<
 type EvalBinaryExpr<
   env extends EnvConcept,
   expr extends BinaryExprConcept,
+  __natLiteralConcept extends MakeValueExpr<NatConcept> = MakeValueExpr<NatConcept>,
   __evaluated_expr extends ValueConcept = [
     expr['op'],
     expr['left'],
     expr['right'],
   ] extends [
     infer op extends '+' | '-' | '<=' | '<',
-    infer _left extends NatLiteralConcept,
-    infer _right extends NatLiteralConcept,
+    infer __left extends __natLiteralConcept,
+    infer __right extends __natLiteralConcept,
   ]
     ? MatchCase<
         [
-          [EQUALS<op, '+'>, Add<_left['value'], _right['value']>],
-          [EQUALS<op, '-'>, Sub<_left['value'], _right['value']>],
-          [EQUALS<op, '<='>, Lte<_left['value'], _right['value']>],
-          [EQUALS<op, '<'>, Lt<_left['value'], _right['value']>],
+          [EQUALS<op, '+'>, Add<__left['value'], __right['value']>],
+          [EQUALS<op, '-'>, Sub<__left['value'], __right['value']>],
+          [EQUALS<op, '<='>, Lte<__left['value'], __right['value']>],
+          [EQUALS<op, '<'>, Lt<__left['value'], __right['value']>],
         ]
       >
     : never,
