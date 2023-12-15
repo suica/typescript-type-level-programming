@@ -20,25 +20,20 @@ import {
   NatConcept,
   ValueLiteralConcept,
 } from './syntax/syntax';
-import { EnsureArr, IsEmptyList, MatchCase } from './utils/helper';
+import { EnsureArr, MatchCase } from './utils/helper';
 import { Add, EQUALS, Lt, Lte, Sub } from './utils/nat';
 
+// TODO: test "return" state and decided whether to stop ?
 export type Eval<
   env extends EnvConcept,
   expr extends ExprConcept[] | ExprConcept,
   _input extends ExprConcept[] = EnsureArr<expr>,
-  __result extends EnvConcept = IsEmptyList<_input> extends true
-    ? // no stmt, do nothing
-      env
-    : // get first element to process
-    _input extends [
-        infer head extends ExprConcept,
-        ...infer tail extends ExprConcept[],
-      ]
-    ? // TODO: test "return" state and decided whether to stop ?
-      Eval<EvalSingleStmt<env, head>, tail>
-    : never,
-> = __result;
+> = _input extends [
+  infer head extends ExprConcept,
+  ...infer tail extends ExprConcept[],
+]
+  ? Eval<EvalSingleStmt<env, head>, tail>
+  : env;
 
 export type EvalSingleStmt<
   env extends EnvConcept,
@@ -46,7 +41,7 @@ export type EvalSingleStmt<
 > = expr extends BindExprConcept
   ? UpdateEnv<env, [Omit<expr, 'kind'>], []>
   : expr extends EmptyStmtConcept
-  ? env // do nothing
+  ? env
   : expr extends BinaryExprConcept
   ? EvalBinaryExpr<env, expr>
   : expr extends IfStmtConcept
@@ -87,7 +82,6 @@ type A = Eval<
     alternate: [MakeValueExpr<MakeNat<2>>];
   }
 >;
-  
 
 export type TestEvalSingleStmt = [
   Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmtConcept>, _SampleEnv>>,
@@ -129,21 +123,16 @@ type EvalBinaryExpr<
         ]
       >
     : never,
-  __returns extends EnvConcept = EvalSingleStmt<
-    env,
-    MakeValueExpr<__evaluated_expr>
-  >,
-> = __returns;
+> = EvalSingleStmt<env, MakeValueExpr<__evaluated_expr>>;
 
 type TestReadOffTempValue = [
   Expect<EQUALS<ReadOffTempValue<_SampleEnv>, MakeNat<1>>>,
 ];
 
-type EvalIfStmt<
-  env extends EnvConcept,
-  expr extends IfStmtConcept,
-  __returns extends EnvConcept = env,
-> = EQUALS<EnvConcept, env> extends true
+type EvalIfStmt<env extends EnvConcept, expr extends IfStmtConcept> = EQUALS<
+  EnvConcept,
+  env
+> extends true
   ? never
   : EvalSingleStmt<
       env,
@@ -157,5 +146,4 @@ type EvalIfStmt<
 type EvalAssignment<
   env extends EnvConcept,
   expr extends AssignmentConcept,
-  __returns extends EnvConcept = env,
-> = __returns;
+> = env;
