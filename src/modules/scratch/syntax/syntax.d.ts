@@ -82,6 +82,7 @@ export type AssignmentConcept = {
 };
 
 export type ExprConcept =
+  | AssignmentConcept
   | ValueLiteralConcept
   | IdentifierConcept
   | BinaryExprConcept

@@ -8,6 +8,7 @@ import {
 } from './syntax/env';
 import { _SampleEnv } from './syntax/loop';
 import {
+  AssignmentConcept,
   BinaryExprConcept,
   BindExprConcept,
   EmptyStmtConcept,
@@ -42,20 +43,21 @@ export type Eval<
 export type EvalSingleStmt<
   env extends EnvConcept,
   expr extends ExprConcept,
-  __returns extends EnvConcept = expr extends BindExprConcept
-    ? UpdateEnv<env, [Omit<expr, 'kind'>], []>
-    : expr extends EmptyStmtConcept
-    ? env // do nothing
-    : expr extends BinaryExprConcept
-    ? EvalBinaryExpr<env, expr>
-    : expr extends IfStmtConcept
-    ? EvalIfStmt<env, expr>
-    : expr extends ValueLiteralConcept
-    ? UpdateEnv<env, [], [expr['value']]>
-    : expr extends IdentifierConcept
-    ? UpdateEnv<env, [], [Lookup<env, expr['name']>]>
-    : never,
-> = __returns;
+> = expr extends BindExprConcept
+  ? UpdateEnv<env, [Omit<expr, 'kind'>], []>
+  : expr extends EmptyStmtConcept
+  ? env // do nothing
+  : expr extends BinaryExprConcept
+  ? EvalBinaryExpr<env, expr>
+  : expr extends IfStmtConcept
+  ? EvalIfStmt<env, expr> & {}
+  : expr extends ValueLiteralConcept
+  ? UpdateEnv<env, [], [expr['value']]>
+  : expr extends IdentifierConcept
+  ? UpdateEnv<env, [], [Lookup<env, expr['name']>]>
+  : expr extends AssignmentConcept
+  ? EvalAssignment<env, expr>
+  : never;
 
 type TestEvalBinaryExpr = [
   Expect<
@@ -129,9 +131,18 @@ type TestReadOffTempValue = [
 type EvalIfStmt<
   env extends EnvConcept,
   expr extends IfStmtConcept,
-  __env_after_test extends EnvConcept = Eval<env, expr['test']>,
-  __test_value extends ValueConcept = ReadOffTempValue<__env_after_test>,
-  __returns extends EnvConcept = __test_value extends true
+  __returns extends EnvConcept = env,
+> = EvalSingleStmt<
+  env,
+  expr['test']
+> extends infer __env_after_test extends EnvConcept
+  ? ReadOffTempValue<__env_after_test> extends true
     ? Eval<__env_after_test, expr['consequent']>
-    : Eval<__env_after_test, expr['alternate']>,
+    : Eval<__env_after_test, expr['alternate']>
+  : never;
+
+type EvalAssignment<
+  env extends EnvConcept,
+  expr extends AssignmentConcept,
+  __returns extends EnvConcept = env,
 > = __returns;
