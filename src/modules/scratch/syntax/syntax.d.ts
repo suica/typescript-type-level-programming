@@ -63,6 +63,8 @@ export type IdentifierConcept = {
   name: string;
 };
 
+export type MakeIdentifier<T extends string> = { kind: 'Identifier'; name: T };
+
 export type ValueLiteralConcept = {
   kind: 'ValueLiteral';
   value: ValueConcept;
