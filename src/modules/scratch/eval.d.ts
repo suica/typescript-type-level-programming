@@ -54,15 +54,15 @@ export type EvalSingleStmt<
 type EvalBinaryExpr<
   env extends EnvConcept,
   expr extends BinaryExprConcept,
-  __natLiteralConcept extends MakeValueExpr<NatConcept> = MakeValueExpr<NatConcept>,
+  __nat_literal_concept extends MakeValueExpr<NatConcept> = MakeValueExpr<NatConcept>,
   __evaluated_expr extends ValueConcept = [
     expr['op'],
     expr['left'],
     expr['right'],
   ] extends [
     infer op extends '+' | '-' | '<=' | '<',
-    infer __left extends __natLiteralConcept,
-    infer __right extends __natLiteralConcept,
+    infer __left extends __nat_literal_concept,
+    infer __right extends __nat_literal_concept,
   ]
     ? MatchCase<
         [
