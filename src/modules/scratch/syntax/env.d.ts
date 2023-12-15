@@ -1,9 +1,7 @@
 import { Expect } from '@type-challenges/utils';
 import { EQUALS } from './nat';
 import { MakeNat, NatConcept } from './syntax';
-
 export type ValueConcept = NatConcept | boolean;
-
 export type Binding = { name: string; value: ValueConcept };
 export type BindingStack = Binding[];
 export type MakeBinding<
