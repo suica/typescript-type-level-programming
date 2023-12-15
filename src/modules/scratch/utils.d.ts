@@ -80,13 +80,70 @@ type Select2Way<index extends boolean, first, second> = index extends true
   ? first
   : second;
 
-type EnsureArr<T extends any[] | any> = T extends (infer B)[] ? T : T[];
+type EnsureArr<T extends any[] | any> = T extends any[] ? T : T[];
+
+type AssertNumber<T extends number> = T extends number ? number : never;
 type Eval<
   env extends EnvConcept,
-  Expr extends ExprConcept[] | ExprConcept,
-  __returns extends EnvConcept = env,
+  expr extends ExprConcept[] | ExprConcept,
+  _input extends ExprConcept[] = EnsureArr<expr>,
+  __result extends any = IsEmptyList<_input> extends true
+    ? // no stmt, do nothing
+      env
+    : // get first element to process
+    _input extends [
+        infer head extends ExprConcept,
+        ...infer tail extends ExprConcept[],
+      ]
+    ? // TODO: test "return" state and decided whether to stop ?
+      Eval<EvalSingleStmt<env, head>, tail>
+    : never,
+> = __result;
+
+type EvalSingleStmt<
+  env extends EnvConcept,
+  expr extends ExprConcept,
+  __returns extends EnvConcept = expr extends { kind: 'empty' } ? env : never,
 > = __returns;
-type ValueConcept = NatConcept;
+
+type _MatchBranch = [cond: boolean, result: any];
+type MatchCase<T extends _MatchBranch[]> = T extends []
+  ? never
+  : T extends [infer head, ...infer tail extends _MatchBranch[]]
+  ? head extends [true, infer B]
+    ? B
+    : MatchCase<tail>
+  : never;
+
+type TestMatchCase = [
+  Expect<EQUALS<MatchCase<[[true, 2]]>, 2>>,
+  Expect<EQUALS<MatchCase<[[false, 2]]>, never>>,
+  Expect<EQUALS<MatchCase<[[false, 2], [true, 3]]>, 3>>,
+];
+
+type EvalBinaryExpr<
+  env extends EnvConcept,
+  expr extends BinaryExprConcept,
+  __evaluated_expr extends ValueConcept = [
+    expr['op'],
+    expr['left'],
+    expr['right'],
+  ] extends [
+    infer op extends '+' | '-' | '<=' | '<',
+    infer left extends NatConcept,
+    infer right extends NatConcept,
+  ]
+    ? Select2Way<EQUALS<op, '+'>, Add<left, right>, Sub<left, right>>
+    : never,
+  __returns extends EnvConcept = UpdateEnv<env, [], [__evaluated_expr]>,
+> = __returns;
+
+type __haha = [
+  // do nothing
+  Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmt>, _SampleEnv>>,
+  Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmt>, _SampleEnv>>,
+];
+type ValueConcept = NatConcept | boolean;
 
 type Binding = { name: string; value: ValueConcept };
 type BindingStack = Binding[];
@@ -123,17 +180,19 @@ type UpdateEnv<
 type Stmt<T> = any;
 
 type SyntaxKind = 'IfStmt' | 'For' | 'Call';
+
+type BinaryExprConcept = {
+  kind: 'BinaryOperator';
+  op: string;
+  left: ExprConcept;
+  right: ExprConcept;
+};
 type ExprConcept =
+  | BinaryExprConcept
   | {
       kind: 'IfStmt';
       condition: ExprConcept;
       alternate: ExprConcept[];
-    }
-  | {
-      kind: 'BinaryOperator';
-      op: string;
-      left: ExprConcept;
-      right: ExprConcept;
     }
   | {
       kind: 'bind';
@@ -154,8 +213,17 @@ type TempAnonymousLoop<
   __return extends EnvConcept = env,
 > = EQUALS<init, EmptyStmt> extends true
   ? // no need to init, test first
-    Eval<env, test>
+    Eval<env, test> extends MakeEnv<
+      infer __should_return,
+      infer bindings,
+      infer stack
+    >
+    ? { stack: stack }
+    : never
   : TempAnonymousLoop<Eval<env, init>, EmptyStmt, test, update, body>;
+
+type _SampleEnv = MakeEnv<false, [{ name: 'i'; value: MakeNat<0> }]>;
+type C = TempAnonymousLoop<_SampleEnv, EmptyStmt, EmptyStmt, EmptyStmt>;
 
 // Select2Way<Eval<__init_env, test>, Eval<env, test>, Eval<env, update>>;
 
@@ -174,6 +242,11 @@ type _TestTail = [
   Expect<EQUALS<TAIL<[1, 2, 3]>, [2, 3]>>,
   Expect<EQUALS<TAIL<[]>, []>>,
 ];
+
+type IsEmptyList<
+  T extends any[],
+  __returns extends boolean = EQUALS<HEAD<T>, never>,
+> = __returns;
 
 type Lookup<
   env extends EnvConcept,
@@ -203,7 +276,7 @@ type _TestLookup = [
   Expect<EQUALS<never, Lookup<_ExampleEnv, 'not_found'>>>,
 ];
 
-type _test = TempAnonymousLoop<{}, MakeNat<0>, LTE<>>;
+// type _test = TempAnonymousLoop<{}, MakeNat<0>, LTE<>>;
 // function test_for() {
 //   for (let i = 0; i < 10; i++) {
 //     if (i * i > 5) {
