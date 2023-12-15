@@ -11,7 +11,7 @@ import {
   MakeNat,
   MakeValueExpr,
   NatConcept,
-  ValueExprConcept,
+  ValueLiteralConcept,
 } from './syntax/syntax';
 import { EnsureArr, IsEmptyList, MatchCase } from './utils/helper';
 import { Add, EQUALS, Lt, Lte, Sub } from './utils/nat';
@@ -44,7 +44,7 @@ export type EvalSingleStmt<
     ? EvalBinaryExpr<env, expr>
     : expr extends IfStmtConcept
     ? env
-    : expr extends ValueExprConcept
+    : expr extends ValueLiteralConcept
     ? UpdateEnv<env, [], [expr['value']]>
     : expr extends IdentifierConcept
     ? UpdateEnv<env, [], [Lookup<env, expr['name']>]>

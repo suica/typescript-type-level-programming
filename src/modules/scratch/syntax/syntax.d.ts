@@ -62,20 +62,20 @@ export type IdentifierConcept = {
   name: string;
 };
 
-export type ValueExprConcept = {
+export type ValueLiteralConcept = {
   kind: 'ValueLiteral';
   value: ValueConcept;
 };
 export type MakeValueExpr<
   T extends ValueConcept,
-  __returns extends ValueExprConcept = {
+  __returns extends ValueLiteralConcept = {
     kind: 'ValueLiteral';
     value: T;
   },
 > = __returns;
 
 export type ExprConcept =
-  | ValueExprConcept
+  | ValueLiteralConcept
   | IdentifierConcept
   | BinaryExprConcept
   | BindExprConcept
