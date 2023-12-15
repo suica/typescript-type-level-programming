@@ -75,6 +75,12 @@ export type MakeValueExpr<
   },
 > = __returns;
 
+export type AssignmentConcept = {
+  kind: 'Assignment';
+  left: IdentifierConcept;
+  right: ExprConcept;
+};
+
 export type ExprConcept =
   | ValueLiteralConcept
   | IdentifierConcept

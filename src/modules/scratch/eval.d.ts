@@ -1,5 +1,11 @@
 import { Expect } from '@type-challenges/utils';
-import { EnvConcept, Lookup, UpdateEnv, ValueConcept } from './syntax/env';
+import {
+  EnvConcept,
+  Lookup,
+  ReadOffTempValue,
+  UpdateEnv,
+  ValueConcept,
+} from './syntax/env';
 import { _SampleEnv } from './syntax/loop';
 import {
   BinaryExprConcept,
@@ -54,16 +60,18 @@ export type EvalSingleStmt<
 type TestEvalBinaryExpr = [
   Expect<
     EQUALS<
-      EvalBinaryExpr<
-        _SampleEnv,
-        {
-          kind: 'BinaryOperator';
-          op: '+';
-          left: MakeValueExpr<MakeNat<1>>;
-          right: MakeValueExpr<MakeNat<2>>;
-        }
-      >['stack'],
-      [MakeNat<3>]
+      ReadOffTempValue<
+        EvalBinaryExpr<
+          _SampleEnv,
+          {
+            kind: 'BinaryOperator';
+            op: '+';
+            left: MakeValueExpr<MakeNat<1>>;
+            right: MakeValueExpr<MakeNat<2>>;
+          }
+        >
+      >,
+      MakeNat<3>
     >
   >,
 ];
@@ -114,11 +122,15 @@ type EvalBinaryExpr<
   >,
 > = __returns;
 
+type TestReadOffTempValue = [
+  Expect<EQUALS<ReadOffTempValue<_SampleEnv>, MakeNat<1>>>,
+];
+
 type EvalIfStmt<
   env extends EnvConcept,
   expr extends IfStmtConcept,
   __env_after_test extends EnvConcept = Eval<env, expr['test']>,
-  __test_value extends ValueConcept = boolean,
+  __test_value extends ValueConcept = ReadOffTempValue<__env_after_test>,
   __returns extends EnvConcept = __test_value extends true
     ? Eval<__env_after_test, expr['consequent']>
     : Eval<__env_after_test, expr['alternate']>,

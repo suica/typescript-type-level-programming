@@ -1,7 +1,7 @@
-import { Eval } from "../eval";
-import { EnvConcept, MakeEnv } from "./env";
-import { EQUALS } from "../utils/nat";
-import { ExprConcept, EmptyStmtConcept, MakeNat } from "./syntax";
+import { Eval } from '../eval';
+import { EQUALS } from '../utils/nat';
+import { EnvConcept, MakeEnv } from './env';
+import { EmptyStmtConcept, ExprConcept, MakeNat } from './syntax';
 
 type TempAnonymousLoop<
   env extends EnvConcept,
@@ -22,7 +22,11 @@ type TempAnonymousLoop<
     : never
   : TempAnonymousLoop<Eval<env, init>, EmptyStmtConcept, test, update, body>;
 
-type _SampleEnv = MakeEnv<false, [{ name: 'i'; value: MakeNat<0> }]>;
+type _SampleEnv = MakeEnv<
+  false,
+  [{ name: 'i'; value: MakeNat<0> }],
+  [MakeNat<1>]
+>;
 type C = TempAnonymousLoop<
   _SampleEnv,
   EmptyStmtConcept,

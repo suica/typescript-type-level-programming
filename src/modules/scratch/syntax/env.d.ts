@@ -65,3 +65,8 @@ type _TestLookup = [
   Expect<EQUALS<MakeNat<0>, Lookup<_ExampleEnv, 'zero'>>>,
   Expect<EQUALS<never, Lookup<_ExampleEnv, 'not_found'>>>,
 ];
+
+export type ReadOffTempValue<
+  env extends EnvConcept,
+  __returns extends ValueConcept = env['stack'][0],
+> = __returns;
