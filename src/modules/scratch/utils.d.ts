@@ -40,7 +40,7 @@ export type Sub<A extends NatConcept, B extends NatConcept> = A extends [
 ]
   ? C
   : [];
-export type LTE<A extends NatConcept, B extends NatConcept> = Sub<
+export type Lte<A extends NatConcept, B extends NatConcept> = Sub<
   A,
   B
 > extends []
@@ -67,7 +67,7 @@ export type OR<A extends boolean, B extends boolean> = A extends true
   ? true
   : false;
 
-export type LT<A extends NatConcept, B extends NatConcept> = LTE<
+export type Lt<A extends NatConcept, B extends NatConcept> = Lte<
   A,
   B
 > extends []
@@ -110,14 +110,15 @@ type _MatchBranch = [cond: boolean, result: any];
 type MatchCase<T extends _MatchBranch[]> = T extends []
   ? never
   : T extends [infer head, ...infer tail extends _MatchBranch[]]
-  ? head extends [true, infer B]
-    ? B
+  ? head extends [true, infer matched_output]
+    ? matched_output
     : MatchCase<tail>
   : never;
 
 type TestMatchCase = [
   Expect<EQUALS<MatchCase<[[true, 2]]>, 2>>,
   Expect<EQUALS<MatchCase<[[false, 2]]>, never>>,
+  Expect<EQUALS<MatchCase<[]>, never>>,
   Expect<EQUALS<MatchCase<[[false, 2], [true, 3]]>, 3>>,
 ];
 
@@ -137,16 +138,15 @@ type EvalBinaryExpr<
         [
           [EQUALS<op, '+'>, Add<left, right>],
           [EQUALS<op, '-'>, Sub<left, right>],
-          [EQUALS<op, '<='>, LTE<left, right>],
-          [EQUALS<op, '<'>, LT<left, right>],
+          [EQUALS<op, '<='>, Lte<left, right>],
+          [EQUALS<op, '<'>, Lt<left, right>],
         ]
       >
     : never,
   __returns extends EnvConcept = UpdateEnv<env, [], [__evaluated_expr]>,
 > = __returns;
 
-type __haha = [
-  // do nothing
+type TestValSingleStmt = [
   Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmt>, _SampleEnv>>,
   Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmt>, _SampleEnv>>,
 ];
