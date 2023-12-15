@@ -111,8 +111,32 @@ type EvalSingleStmt<
     ? EvalBinaryExpr<env, expr>
     : expr extends IfStmtConcept
     ? env
+    : expr extends ValueExprConcept
+    ? env & {
+        trace?: 'value';
+      }
+    : expr extends IdentifierConcept
+    ? UpdateEnv<env, [], [Lookup<env, expr['name']>]>
     : { error: `not supported statement, found ${expr['kind']}` },
 > = __returns;
+
+type TestValSingleStmt = [
+  Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmtConcept>, _SampleEnv>>,
+  Expect<
+    EQUALS<
+      EvalSingleStmt<
+        _SampleEnv,
+        {
+          kind: 'BinaryOperator';
+          op: '+';
+          left: MakeValueExpr<MakeNat<1>>;
+          right: MakeValueExpr<MakeNat<2>>;
+        }
+      >,
+      UpdateEnv<_SampleEnv, [], [MakeNat<3>]>
+    >
+  >,
+];
 
 type _MatchBranch = [cond: boolean, result: any];
 type MatchCase<T extends _MatchBranch[]> = T extends []
@@ -130,6 +154,7 @@ type TestMatchCase = [
   Expect<EQUALS<MatchCase<[[false, 2], [true, 3]]>, 3>>,
 ];
 
+type NatLiteralConcept = MakeValueExpr<NatConcept>;
 type EvalBinaryExpr<
   env extends EnvConcept,
   expr extends BinaryExprConcept,
@@ -139,24 +164,36 @@ type EvalBinaryExpr<
     expr['right'],
   ] extends [
     infer op extends '+' | '-' | '<=' | '<',
-    infer left extends NatConcept,
-    infer right extends NatConcept,
+    infer _left extends NatLiteralConcept,
+    infer _right extends NatLiteralConcept,
   ]
     ? MatchCase<
         [
-          [EQUALS<op, '+'>, Add<left, right>],
-          [EQUALS<op, '-'>, Sub<left, right>],
-          [EQUALS<op, '<='>, Lte<left, right>],
-          [EQUALS<op, '<'>, Lt<left, right>],
+          [EQUALS<op, '+'>, Add<_left['value'], _right['value']>],
+          [EQUALS<op, '-'>, Sub<_left['value'], _right['value']>],
+          [EQUALS<op, '<='>, Lte<_left['value'], _right['value']>],
+          [EQUALS<op, '<'>, Lt<_left['value'], _right['value']>],
         ]
       >
     : never,
   __returns extends EnvConcept = UpdateEnv<env, [], [__evaluated_expr]>,
 > = __returns;
 
-type TestValSingleStmt = [
-  Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmtConcept>, _SampleEnv>>,
-  Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmtConcept>, _SampleEnv>>,
+type TestEvalBinaryExpr = [
+  Expect<
+    EQUALS<
+      EvalBinaryExpr<
+        _SampleEnv,
+        {
+          kind: 'BinaryOperator';
+          op: '+';
+          left: MakeValueExpr<MakeNat<1>>;
+          right: MakeValueExpr<MakeNat<2>>;
+        }
+      >['stack'],
+      [MakeNat<3>]
+    >
+  >,
 ];
 type ValueConcept = NatConcept | boolean;
 
@@ -173,14 +210,14 @@ type MakeBinding<
 type MakeEnv<
   T extends boolean,
   B extends BindingStack = [],
-  S extends BindingStack = [],
+  S extends ValueConcept[] = [],
   __returns extends EnvConcept = {
     return: T;
     bindings: B;
     stack: S;
   },
 > = __returns;
-type EnvConcept = MakeEnv<boolean, BindingStack, BindingStack>;
+type EnvConcept = MakeEnv<boolean, BindingStack, ValueConcept[]>;
 type UpdateEnv<
   env extends EnvConcept,
   bindings extends Binding[] = [],
@@ -188,7 +225,7 @@ type UpdateEnv<
   __returns extends EnvConcept = {
     bindings: [...bindings, ...env['bindings']];
     return: env['return'];
-    stack: env['stack'];
+    stack: [...values, ...env['stack']];
   },
 > = __returns;
 
@@ -196,7 +233,7 @@ type SyntaxKind = ExprConcept['kind'];
 
 type BinaryExprConcept = {
   kind: 'BinaryOperator';
-  op: string;
+  op: '+' | '-' | '<=' | '<';
   left: ExprConcept;
   right: ExprConcept;
 };
@@ -212,7 +249,27 @@ type IfStmtConcept = {
   alternate: ExprConcept[];
 };
 type EmptyStmtConcept = { kind: 'empty' };
+
+type IdentifierConcept = {
+  kind: 'Identifier';
+  name: string;
+};
+
+type ValueExprConcept = {
+  kind: 'ValueLiteral';
+  value: ValueConcept;
+};
+type MakeValueExpr<
+  T extends ValueConcept,
+  __returns extends ValueExprConcept = {
+    kind: 'ValueLiteral';
+    value: T;
+  },
+> = __returns;
+
 type ExprConcept =
+  | ValueExprConcept
+  | IdentifierConcept
   | BinaryExprConcept
   | BindExprConcept
   | EmptyStmtConcept
@@ -272,12 +329,15 @@ type Lookup<
   env extends EnvConcept,
   name extends string,
   rest_variables extends BindingStack = env['bindings'],
-> = EQUALS<rest_variables, []> extends true
-  ? never
-  : HEAD<rest_variables> extends { name: name; value: infer value }
-  ? value
-  : Lookup<env, name, TAIL<rest_variables>>;
-
+  __returns extends ValueConcept = rest_variables extends [
+    infer head,
+    ...infer tail extends BindingStack,
+  ]
+    ? head extends { name: name; value: infer value }
+      ? value
+      : Lookup<env, name, tail>
+    : never,
+> = __returns;
 type _ExampleEnv = MakeEnv<
   false,
   [
