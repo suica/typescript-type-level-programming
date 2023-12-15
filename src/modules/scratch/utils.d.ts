@@ -106,9 +106,9 @@ type EvalSingleStmt<
   __returns extends EnvConcept = expr extends BindExprConcept
     ? UpdateEnv<env, [Omit<expr, 'kind'>], []>
     : expr extends EmptyStmtConcept
-    ? env
+    ? env // do nothing
     : expr extends BinaryExprConcept
-    ? env
+    ? EvalBinaryExpr<env, expr>
     : expr extends IfStmtConcept
     ? env
     : { error: `not supported statement, found ${expr['kind']}` },
