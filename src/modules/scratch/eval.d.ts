@@ -33,7 +33,7 @@ export type Eval<
   infer head extends ExprConcept,
   ...infer tail extends ExprConcept[],
 ]
-  ? EQUALS<head, ExprConcept> extends true
+  ? EQUALS<head, ExprConcept> extends true // avoid invoking with ExprConcept
     ? never
     : Eval<EvalSingleStmt<env, head>, tail>
   : env;
