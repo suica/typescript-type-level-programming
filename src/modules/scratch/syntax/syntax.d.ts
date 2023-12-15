@@ -52,7 +52,8 @@ export type BindExprConcept = {
 
 export type IfStmtConcept = {
   kind: 'IfStmt';
-  condition: ExprConcept;
+  test: ExprConcept;
+  consequent: ExprConcept[];
   alternate: ExprConcept[];
 };
 export type EmptyStmtConcept = { kind: 'empty' };

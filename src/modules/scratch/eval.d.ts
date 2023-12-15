@@ -117,5 +117,6 @@ type EvalBinaryExpr<
 type EvalIfStmt<
   env extends EnvConcept,
   expr extends IfStmtConcept,
+  __evaluated_condition = Eval<env, expr['test']>,
   __returns extends EnvConcept = unknown,
 > = __returns;
