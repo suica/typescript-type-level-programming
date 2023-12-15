@@ -133,7 +133,14 @@ type EvalBinaryExpr<
     infer left extends NatConcept,
     infer right extends NatConcept,
   ]
-    ? Select2Way<EQUALS<op, '+'>, Add<left, right>, Sub<left, right>>
+    ? MatchCase<
+        [
+          [EQUALS<op, '+'>, Add<left, right>],
+          [EQUALS<op, '-'>, Sub<left, right>],
+          [EQUALS<op, '<='>, LTE<left, right>],
+          [EQUALS<op, '<'>, LT<left, right>],
+        ]
+      >
     : never,
   __returns extends EnvConcept = UpdateEnv<env, [], [__evaluated_expr]>,
 > = __returns;
