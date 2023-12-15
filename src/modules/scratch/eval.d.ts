@@ -60,7 +60,7 @@ type EvalBinaryExpr<
     expr['left'],
     expr['right'],
   ] extends [
-    infer op extends '+' | '-' | '<=' | '<',
+    infer op extends BinaryExprConcept['op'],
     infer __left extends __nat_literal_concept,
     infer __right extends __nat_literal_concept,
   ]
