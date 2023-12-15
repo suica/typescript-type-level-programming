@@ -1,6 +1,6 @@
 import { Eval } from "../eval";
 import { EnvConcept, MakeEnv } from "./env";
-import { EQUALS } from "./nat";
+import { EQUALS } from "../utils/nat";
 import { ExprConcept, EmptyStmtConcept, MakeNat } from "./syntax";
 
 type TempAnonymousLoop<

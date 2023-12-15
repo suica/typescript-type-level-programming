@@ -1,13 +1,20 @@
 import { Expect } from '@type-challenges/utils';
 import { EnvConcept, Lookup, UpdateEnv, ValueConcept } from './syntax/env';
-import { Add, EQUALS, Lt, Lte, Sub } from './syntax/nat';
-import { BinaryExprConcept, BindExprConcept, EmptyStmtConcept, ExprConcept, IdentifierConcept, IfStmtConcept, MakeNat, MakeValueExpr, NatConcept, ValueExprConcept } from './syntax/syntax';
-import {
-  EnsureArr,
-  IsEmptyList,
-  MatchCase,
-} from './utils';
 import { _SampleEnv } from './syntax/loop';
+import {
+  BinaryExprConcept,
+  BindExprConcept,
+  EmptyStmtConcept,
+  ExprConcept,
+  IdentifierConcept,
+  IfStmtConcept,
+  MakeNat,
+  MakeValueExpr,
+  NatConcept,
+  ValueExprConcept,
+} from './syntax/syntax';
+import { EnsureArr, IsEmptyList, MatchCase } from './utils/helper';
+import { Add, EQUALS, Lt, Lte, Sub } from './utils/nat';
 
 type NatLiteralConcept = MakeValueExpr<NatConcept>;
 type EvalBinaryExpr<
@@ -53,8 +60,6 @@ type TestEvalBinaryExpr = [
     >
   >,
 ];
-
-
 
 export type Eval<
   env extends EnvConcept,

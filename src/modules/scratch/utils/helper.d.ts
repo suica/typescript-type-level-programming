@@ -1,6 +1,6 @@
 import { type Expect } from '@type-challenges/utils';
-import { EQUALS } from './syntax/nat';
-import { NatConcept } from './syntax/syntax';
+import { NatConcept } from '../syntax/syntax';
+import { EQUALS } from './nat';
 export type __NatToNumericLiteralType<T extends NatConcept> = T['length'];
 export type EnsureArr<T extends any[] | any> = T extends any[] ? T : T[];
 export type _MatchBranch = [cond: boolean, result: any];
@@ -34,7 +34,7 @@ type _TestTail = [
   Expect<EQUALS<TAIL<[]>, []>>,
 ];
 
-type IsEmptyList<
+export type IsEmptyList<
   T extends any[],
   __returns extends boolean = EQUALS<HEAD<T>, never>,
 > = __returns;

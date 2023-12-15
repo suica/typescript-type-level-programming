@@ -1,4 +1,4 @@
-import { NatConcept } from './syntax';
+import { NatConcept } from '../syntax/syntax';
 
 export type Add<A extends NatConcept, B extends NatConcept> = [...A, ...B];
 export type Sub<A extends NatConcept, B extends NatConcept> = A extends [

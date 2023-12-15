@@ -1,6 +1,6 @@
 import { Expect } from '@type-challenges/utils';
-import { __NatToNumericLiteralType } from '../utils';
-import { Add, EQUALS } from './nat';
+import { __NatToNumericLiteralType } from '../utils/helper';
+import { Add, EQUALS } from '../utils/nat';
 import { ValueConcept } from './env';
 
 export type NatConcept = number[];
