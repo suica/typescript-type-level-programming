@@ -81,24 +81,47 @@ type Select2Way<index extends boolean, first, second> = index extends true
   : second;
 
 type EnsureArr<T extends any[] | any> = T extends (infer B)[] ? T : T[];
-type Eval<env extends EnvConcept, Expr extends ExprConcept[] | ExprConcept> = [
-  env,
-  EnsureArr<Expr>,
-];
+type Eval<
+  env extends EnvConcept,
+  Expr extends ExprConcept[] | ExprConcept,
+  __returns extends EnvConcept = env,
+> = __returns;
+type ValueConcept = NatConcept;
 
-type Stack = { name: string; value: NatConcept }[];
+type Binding = { name: string; value: ValueConcept };
+type BindingStack = Binding[];
+type MakeBinding<
+  name extends string,
+  value extends ValueConcept,
+  __returns extends Binding = {
+    name: name;
+    value: value;
+  },
+> = __returns;
 type MakeEnv<
   T extends boolean,
-  S extends { name: string; value: NatConcept }[] = [],
-> = {
-  return: T;
-  stack: S;
-};
-type E = MakeEnv<false, [{ name: 'haha'; value: [1] }]>;
+  B extends BindingStack = [],
+  S extends BindingStack = [],
+  __returns extends EnvConcept = {
+    return: T;
+    bindings: B;
+    stack: S;
+  },
+> = __returns;
+type EnvConcept = MakeEnv<boolean, BindingStack, BindingStack>;
+type UpdateEnv<
+  env extends EnvConcept,
+  bindings extends Binding[] = [],
+  values extends ValueConcept[] = [],
+  __returns extends EnvConcept = {
+    bindings: [...bindings, ...env['bindings']];
+    return: env['return'];
+    stack: env['stack'];
+  },
+> = __returns;
 
 type Stmt<T> = any;
 
-type EnvConcept = MakeEnv<boolean, Stack>;
 type SyntaxKind = 'IfStmt' | 'For' | 'Call';
 type ExprConcept =
   | {
@@ -111,14 +134,30 @@ type ExprConcept =
       op: string;
       left: ExprConcept;
       right: ExprConcept;
+    }
+  | {
+      kind: 'bind';
+    }
+  | {
+      kind: 'empty';
+      // has no effect on the env
     };
 
+type EmptyStmt<__returns extends ExprConcept = { kind: 'empty' }> = __returns;
 type TempAnonymousLoop<
   env extends EnvConcept,
-  i extends NatConcept,
-  test extends ExprConcept,
-  update extends ExprConcept[],
-> = Select2Way<LTE<i, MakeNat<10>>, Eval<env, test>, Eval<env, update>>;
+  init extends ExprConcept = EmptyStmt,
+  test extends ExprConcept = EmptyStmt,
+  update extends ExprConcept = EmptyStmt,
+  body extends ExprConcept[] = [EmptyStmt],
+  __evaluated_test extends EnvConcept = Eval<env, test>,
+  __return extends EnvConcept = env,
+> = EQUALS<init, EmptyStmt> extends true
+  ? // no need to init, test first
+    Eval<env, test>
+  : TempAnonymousLoop<Eval<env, init>, EmptyStmt, test, update, body>;
+
+// Select2Way<Eval<__init_env, test>, Eval<env, test>, Eval<env, update>>;
 
 type HEAD<T extends any[]> = T extends [infer head, ...infer rest]
   ? head
@@ -139,7 +178,7 @@ type _TestTail = [
 type Lookup<
   env extends EnvConcept,
   name extends string,
-  rest_variables extends Stack = env['stack'],
+  rest_variables extends BindingStack = env['bindings'],
 > = EQUALS<rest_variables, []> extends true
   ? never
   : HEAD<rest_variables> extends { name: name; value: infer value }
@@ -164,7 +203,7 @@ type _TestLookup = [
   Expect<EQUALS<never, Lookup<_ExampleEnv, 'not_found'>>>,
 ];
 
-// type _test = TempAnonymousLoop<{}, MakeNat<0>, LTE<>>;
+type _test = TempAnonymousLoop<{}, MakeNat<0>, LTE<>>;
 // function test_for() {
 //   for (let i = 0; i < 10; i++) {
 //     if (i * i > 5) {
