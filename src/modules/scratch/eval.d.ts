@@ -50,7 +50,7 @@ export type EvalSingleStmt<
   : expr extends BinaryExprConcept
   ? EvalBinaryExpr<env, expr>
   : expr extends IfStmtConcept
-  ? EvalIfStmt<env, expr> & {}
+  ? EvalIfStmt<env, expr>
   : expr extends ValueLiteralConcept
   ? UpdateEnv<env, [], [expr['value']]>
   : expr extends IdentifierConcept
@@ -77,6 +77,17 @@ type TestEvalBinaryExpr = [
     >
   >,
 ];
+
+type A = Eval<
+  _SampleEnv,
+  {
+    kind: 'IfStmt';
+    test: MakeValueExpr<true>;
+    consequent: [MakeValueExpr<MakeNat<1>>];
+    alternate: [MakeValueExpr<MakeNat<2>>];
+  }
+>;
+  
 
 export type TestEvalSingleStmt = [
   Expect<EQUALS<EvalSingleStmt<_SampleEnv, EmptyStmtConcept>, _SampleEnv>>,
@@ -132,10 +143,12 @@ type EvalIfStmt<
   env extends EnvConcept,
   expr extends IfStmtConcept,
   __returns extends EnvConcept = env,
-> = EvalSingleStmt<
-  env,
-  expr['test']
-> extends infer __env_after_test extends EnvConcept
+> = EQUALS<EnvConcept, env> extends true
+  ? never
+  : EvalSingleStmt<
+      env,
+      expr['test']
+    > extends infer __env_after_test extends EnvConcept
   ? ReadOffTempValue<__env_after_test> extends true
     ? Eval<__env_after_test, expr['consequent']>
     : Eval<__env_after_test, expr['alternate']>
