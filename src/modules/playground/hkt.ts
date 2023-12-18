@@ -83,21 +83,17 @@ type SingleApplication<F extends HKT, TypeArgument> = F & {
     TypeArgument
   >;
 };
-type Kind<F extends HKT, TypeArgument> = Arity<
-  SingleApplication<F, TypeArgument>
-> extends 0
+type Kind<F extends HKT, TypeArgument> = EQUALS<
+  SingleApplication<F, TypeArgument>['TypeArguments'][number],
+  unknown
+> extends false
   ? SingleApplication<F, TypeArgument>['type']
   : SingleApplication<F, TypeArgument>;
-
-
-type HHa = Kind<ArrayHKT, string>['TypeArguments'];
 
 type TestSingleApplication = [
   Expect<EQUALS<Kind<ArrayHKT, string>, string[]>>,
   Expect<EQUALS<Kind<ArrayHKT, number>, number[]>>,
-  Expect<
-    EQUALS<Kind<Kind<MapHKT, string>, number>['type'], Map<string, number>>
-  >,
+  Expect<EQUALS<Kind<Kind<MapHKT, string>, number>, Map<string, number>>>,
 ];
 
 interface Mappable<F extends HKT> {
@@ -167,9 +163,6 @@ type TestApplication = [
   Expect<
     EQUALS<PartialApply<MapHKT, [string, number, string]>, Map<string, number>>
   >,
-  PartialApply<MapHKT, [string]>,
-  PartialApply<MapHKT, [string, number, string]>,
-
   Expect<
     EQUALS<
       PartialApply<PartialApply<MapHKT, [string]>, [number]>,
