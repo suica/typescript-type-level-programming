@@ -129,7 +129,7 @@ describe('transpiler', () => {
     ).toBe(``);
   });
 
-  it('should work for functions with ?! operators', () => {
+  it('should work for functions with ?: operators', () => {
     expect(
       transpileHelper(`
         function sub(x: number, y:number){
