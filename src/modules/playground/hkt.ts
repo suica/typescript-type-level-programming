@@ -50,25 +50,21 @@ type TestReplaceFirstUnknownWith = [
   Expect<EQUALS<ReplaceFirstUnknownWith<[], number>, []>>,
 ];
 
-// type TupleIntersection<A extends any[], B extends any[]> = {
-//   [x in keyof A & keyof B]: x extends keyof A
-//     ? x extends keyof B
-//       ? A[x] & B[x]
-//       : A[x]
-//     : x extends keyof B
-//     ? B[x]
-//     : never;
-// };
-
-type TupleIntersection<A extends any[], B extends any[]> = {
+type TupleComponentIntersection<A extends any[], B extends any[]> = {
   [x in keyof A]: x extends keyof B ? A[x] & B[x] : A[x];
 };
 type TestTupleIntersection = [
-  TupleIntersection<[unknown, unknown], [string, number]>,
+  TupleComponentIntersection<[unknown, unknown], [string, number]>,
   Expect<
     EQUALS<
-      TupleIntersection<[unknown, unknown], [string, number]>,
+      TupleComponentIntersection<[unknown, unknown], [string, number]>,
       [string, number]
+    >
+  >,
+  Expect<
+    EQUALS<
+      TupleComponentIntersection<[number, unknown], [unknown, string]>,
+      [number, string]
     >
   >,
 ];
@@ -105,12 +101,7 @@ const stringify =
 interface HKTWithArity<Arity extends number> extends HKT {
   readonly TypeArguments: MakeArityConstraint<Arity>;
 }
-type PartialApply<lambda, arguments extends unknown[]> = EQUALS<
-  arguments['length'],
-  number
-> extends true
-  ? 2333
-  : lambda extends HKT
+type PartialApply<lambda, arguments extends unknown[]> = lambda extends HKT
   ? arguments['length'] extends 0
     ? lambda['type']
     : PartialApply<Kind<lambda, arguments[0]>, TAIL<arguments>>
@@ -136,7 +127,9 @@ type TestArity = [
 type TestApplication = [
   Expect<EQUALS<PartialApply<ArrayHKT, [string]>, string[]>>,
   Expect<EQUALS<PartialApply<MapHKT, [string, number]>, Map<string, number>>>,
+  Expect<EQUALS<PartialApply<MapHKT, [string, number, string]>, Map<string, number>>>,
   PartialApply<MapHKT, [string]>,
+  PartialApply<MapHKT, [string, number, string]>,
   Expect<
     EQUALS<
       PartialApply<PartialApply<MapHKT, [string]>, [number]>,
