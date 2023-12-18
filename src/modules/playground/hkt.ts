@@ -50,6 +50,29 @@ type TestReplaceFirstUnknownWith = [
   Expect<EQUALS<ReplaceFirstUnknownWith<[], number>, []>>,
 ];
 
+// type TupleIntersection<A extends any[], B extends any[]> = {
+//   [x in keyof A & keyof B]: x extends keyof A
+//     ? x extends keyof B
+//       ? A[x] & B[x]
+//       : A[x]
+//     : x extends keyof B
+//     ? B[x]
+//     : never;
+// };
+
+type TupleIntersection<A extends any[], B extends any[]> = {
+  [x in keyof A]: x extends keyof B ? A[x] & B[x] : A[x];
+};
+type TestTupleIntersection = [
+  TupleIntersection<[unknown, unknown], [string, number]>,
+  Expect<
+    EQUALS<
+      TupleIntersection<[unknown, unknown], [string, number]>,
+      [string, number]
+    >
+  >,
+];
+
 export interface HKT {
   readonly TypeArguments: unknown[];
   readonly type?: unknown;
@@ -59,7 +82,7 @@ export interface ArrayHKT extends HKTWithArity<1> {
 }
 type Kind<F extends HKT, TypeArgument> = (F & {
   readonly TypeArguments: EQUALS<F['TypeArguments'], unknown[]> extends true
-    ? unknown
+    ? unknown[]
     : ReplaceFirstUnknownWith<F['TypeArguments'], TypeArgument>;
 })['type'];
 
@@ -87,7 +110,7 @@ type PartialApply<lambda, arguments extends unknown[]> = EQUALS<
   arguments['length'],
   number
 > extends true
-  ? unknown
+  ? 2333
   : lambda extends HKT
   ? PartialApply<Kind<lambda, arguments[0]>, TAIL<arguments>>
   : lambda;
@@ -97,7 +120,8 @@ type Arity<T> = T extends HKTWithArity<number>
   : 0;
 
 interface MapHKT extends HKTWithArity<2> {
-  type: Map<this['TypeArguments'][0], this['TypeArguments'][1]>;
+  // type: Map<this['TypeArguments'][0], this['TypeArguments'][1]>;
+  type: this['TypeArguments'];
 }
 
 type TestArity = [
@@ -106,13 +130,15 @@ type TestArity = [
   Expect<EQUALS<Arity<[string, number]>, 0>>,
   Expect<EQUALS<Arity<ArrayHKT>, 1>>,
   Expect<EQUALS<Arity<HKT>, number>>,
+  Expect<EQUALS<Arity<MapHKT>, 2>>,
 ];
 
 type TestApplication = [
   Expect<EQUALS<PartialApply<ArrayHKT, [string]>, string[]>>,
   Expect<EQUALS<PartialApply<MapHKT, [string, number]>, Map<string, number>>>,
+  PartialApply<MapHKT, [string]>,
+  PartialApply<PartialApply<MapHKT, [string]>, [number]>,
 ];
-
 // FIXME
-type failed = PartialApply<MapHKT, [string, number]>;
+type failed = PartialApply<MapHKT, [number, string]>;
 //   ^?
