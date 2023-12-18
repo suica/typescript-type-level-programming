@@ -82,8 +82,8 @@ type Kind<F extends HKT, TypeArgument> = (F & {
 });
 
 type TestSingleApplication = [
-  Expect<EQUALS<Kind<ArrayHKT, string>, string[]>>,
-  Expect<EQUALS<Kind<ArrayHKT, number>, number[]>>,
+  Expect<EQUALS<Kind<ArrayHKT, string>['type'], string[]>>,
+  Expect<EQUALS<Kind<ArrayHKT, number>['type'], number[]>>,
 ];
 
 interface Mappable<F extends HKT> {
