@@ -17,23 +17,51 @@ type MakeArityConstraint<
   ? res_nat
   : MakeArityConstraint<T, [unknown, ...res_nat]>;
 
+// type TakeFirst<
+//   Arr extends any[],
+//   first extends number,
+//   result extends any[] = [],
+// > = Arr['length'] extends 0
+//   ? result
+//   : result['length'] extends first
+//   ? result
+//   : TakeFirst<TAIL<Arr>, first, [...result, Arr[0]]>;
+
+type ReplaceFirstUnknownWith<
+  Arr extends any[],
+  item,
+  result extends any[] = [],
+> = Arr['length'] extends 0
+  ? result
+  : EQUALS<Arr[0], unknown> extends true
+  ? [...result, item, ...TAIL<Arr>]
+  : ReplaceFirstUnknownWith<TAIL<Arr>, item, [...result, Arr[0]]>;
+
+type TestReplaceFirstUnknownWith = [
+  Expect<
+    EQUALS<
+      ReplaceFirstUnknownWith<[unknown, unknown], number>,
+      [number, unknown]
+    >
+  >,
+  Expect<
+    EQUALS<ReplaceFirstUnknownWith<[number, unknown], number>, [number, number]>
+  >,
+  Expect<EQUALS<ReplaceFirstUnknownWith<[], number>, []>>,
+];
+
 export interface HKT {
-  readonly TypeArgument: unknown;
+  readonly TypeArguments: unknown[];
   readonly type?: unknown;
 }
 export interface ArrayHKT extends HKTWithArity<1> {
-  readonly type: Array<this['TypeArgument']>;
+  readonly type: Array<this['TypeArguments'][0]>;
 }
-type Kind<F extends HKT, TypeArgument> = F extends {
-  readonly type: unknown;
-}
-  ? (F & {
-      readonly TypeArgument: TypeArgument;
-    })['type']
-  : {
-      readonly F: F;
-      readonly invariance: (_: TypeArgument) => TypeArgument;
-    };
+type Kind<F extends HKT, TypeArgument> = (F & {
+  readonly TypeArguments: EQUALS<F['TypeArguments'], unknown[]> extends true
+    ? unknown
+    : ReplaceFirstUnknownWith<F['TypeArguments'], TypeArgument>;
+})['type'];
 
 type TestSingleApplication = [
   Expect<EQUALS<Kind<ArrayHKT, string>, string[]>>,
@@ -52,8 +80,8 @@ const stringify =
       return `number: ${n}`;
     });
 
-interface HKTWithArity<arity extends number> extends HKT {
-  readonly TypeArguments: MakeArityConstraint<arity>;
+interface HKTWithArity<Arity extends number> extends HKT {
+  readonly TypeArguments: MakeArityConstraint<Arity>;
 }
 type PartialApply<lambda, arguments extends unknown[]> = EQUALS<
   arguments['length'],
@@ -77,7 +105,7 @@ type TestArity = [
   Expect<EQUALS<Arity<number>, 0>>,
   Expect<EQUALS<Arity<[string, number]>, 0>>,
   Expect<EQUALS<Arity<ArrayHKT>, 1>>,
-  Expect<EQUALS<Arity<HKT>, 0>>,
+  Expect<EQUALS<Arity<HKT>, number>>,
 ];
 
 type TestApplication = [
