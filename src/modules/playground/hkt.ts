@@ -81,10 +81,9 @@ export interface ArrayHKT extends HKTWithArity<1> {
   readonly type: Array<this['TypeArguments'][0]>;
 }
 type Kind<F extends HKT, TypeArgument> = (F & {
-  readonly TypeArguments: EQUALS<F['TypeArguments'], unknown[]> extends true
-    ? unknown[]
-    : ReplaceFirstUnknownWith<F['TypeArguments'], TypeArgument>;
-})['type'];
+  readonly TypeArguments: 
+     ReplaceFirstUnknownWith<F['TypeArguments'], TypeArgument>;
+});
 
 type TestSingleApplication = [
   Expect<EQUALS<Kind<ArrayHKT, string>, string[]>>,
@@ -112,7 +111,9 @@ type PartialApply<lambda, arguments extends unknown[]> = EQUALS<
 > extends true
   ? 2333
   : lambda extends HKT
-  ? PartialApply<Kind<lambda, arguments[0]>, TAIL<arguments>>
+  ? arguments['length'] extends 0
+    ? lambda['type']
+    : PartialApply<Kind<lambda, arguments[0]>, TAIL<arguments>>
   : lambda;
 
 type Arity<T> = T extends HKTWithArity<number>
@@ -120,8 +121,7 @@ type Arity<T> = T extends HKTWithArity<number>
   : 0;
 
 interface MapHKT extends HKTWithArity<2> {
-  // type: Map<this['TypeArguments'][0], this['TypeArguments'][1]>;
-  type: this['TypeArguments'];
+  type: Map<this['TypeArguments'][0], this['TypeArguments'][1]>;
 }
 
 type TestArity = [
@@ -137,8 +137,14 @@ type TestApplication = [
   Expect<EQUALS<PartialApply<ArrayHKT, [string]>, string[]>>,
   Expect<EQUALS<PartialApply<MapHKT, [string, number]>, Map<string, number>>>,
   PartialApply<MapHKT, [string]>,
-  PartialApply<PartialApply<MapHKT, [string]>, [number]>,
+  Expect<
+    EQUALS<
+      PartialApply<PartialApply<MapHKT, [string]>, [number]>,
+      Map<string, number>
+    >
+  >,
 ];
+
 // FIXME
-type failed = PartialApply<MapHKT, [number, string]>;
+type failed = PartialApply<PartialApply<MapHKT, [string]>, [number]>;
 //   ^?
