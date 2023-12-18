@@ -31,3 +31,4 @@
 1. [fp-ts](https://github.com/gcanti/fp-ts)
 1. [Effective Typescript：使用Typescript的n个技巧](https://zhuanlan.zhihu.com/p/104311029)
 1. [Type-Challenges](https://github.com/type-challenges/type-challenges)
+1. [hkts](https://github.com/pelotom/hkts?tab=readme-ov-file)
