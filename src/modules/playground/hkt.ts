@@ -115,6 +115,9 @@ interface MapHKT extends HKTWithArity<2> {
   type: Map<this['TypeArguments'][0], this['TypeArguments'][1]>;
 }
 
+type AnotherMapHKT<
+  TypeArguments extends MakeArityConstraint<2> = MakeArityConstraint<2>,
+> = { type: Map<TypeArguments[0], TypeArguments[1]> };
 type TestArity = [
   Expect<EQUALS<Arity<PartialApply<ArrayHKT, [string]>>, 0>>,
   Expect<EQUALS<Arity<number>, 0>>,
