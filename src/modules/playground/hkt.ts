@@ -17,16 +17,6 @@ type MakeArityConstraint<
   ? res_nat
   : MakeArityConstraint<T, [unknown, ...res_nat]>;
 
-// type TakeFirst<
-//   Arr extends any[],
-//   first extends number,
-//   result extends any[] = [],
-// > = Arr['length'] extends 0
-//   ? result
-//   : result['length'] extends first
-//   ? result
-//   : TakeFirst<TAIL<Arr>, first, [...result, Arr[0]]>;
-
 type ReplaceFirstUnknownWith<
   Arr extends any[],
   item,
@@ -50,25 +40,6 @@ type TestReplaceFirstUnknownWith = [
   Expect<EQUALS<ReplaceFirstUnknownWith<[], number>, []>>,
 ];
 
-type TupleComponentIntersection<A extends any[], B extends any[]> = {
-  [x in keyof A]: x extends keyof B ? A[x] & B[x] : A[x];
-};
-type TestTupleIntersection = [
-  TupleComponentIntersection<[unknown, unknown], [string, number]>,
-  Expect<
-    EQUALS<
-      TupleComponentIntersection<[unknown, unknown], [string, number]>,
-      [string, number]
-    >
-  >,
-  Expect<
-    EQUALS<
-      TupleComponentIntersection<[number, unknown], [unknown, string]>,
-      [number, string]
-    >
-  >,
-];
-
 export interface HKT {
   readonly TypeArguments: unknown[];
   readonly type?: unknown;
@@ -90,7 +61,7 @@ type Kind<F extends HKT, TypeArgument> = EQUALS<
   ? SingleApplication<F, TypeArgument>['type']
   : SingleApplication<F, TypeArgument>;
 
-type TestSingleApplication = [
+type TestKind = [
   Expect<EQUALS<Kind<ArrayHKT, string>, string[]>>,
   Expect<EQUALS<Kind<ArrayHKT, number>, number[]>>,
   Expect<EQUALS<Kind<Kind<MapHKT, string>, number>, Map<string, number>>>,
@@ -170,7 +141,3 @@ type TestApplication = [
     >
   >,
 ];
-
-// FIXME
-type failed = PartialApply<PartialApply<MapHKT, [string]>, [number]>;
-//   ^?
