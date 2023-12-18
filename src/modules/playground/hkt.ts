@@ -107,8 +107,20 @@ type PartialApply<lambda, arguments extends unknown[]> = lambda extends HKT
     : PartialApply<Kind<lambda, arguments[0]>, TAIL<arguments>>
   : lambda;
 
+type CountUnknown<
+  Arr extends any[],
+  result extends number[] = [],
+> = Arr['length'] extends 0
+  ? result['length']
+  : CountUnknown<
+      TAIL<Arr>,
+      [...result, ...(EQUALS<Arr[0], unknown> extends true ? [1] : [])]
+    >;
+
 type Arity<T> = T extends HKTWithArity<number>
-  ? T['TypeArguments']['length']
+  ? EQUALS<T['TypeArguments']['length'], number> extends true
+    ? number
+    : CountUnknown<T['TypeArguments']>
   : 0;
 
 interface MapHKT extends HKTWithArity<2> {
