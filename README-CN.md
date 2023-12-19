@@ -55,7 +55,8 @@ TODO：示意图
 
 ### 类型编程简介
 
-类型编程 (Type-level Programming)就是用编程的方式，操作类型空间的对象。而值编程（Value-level Programming, 即一般的编程），操作的是值空间的对象。
+类型编程 (Type-level Programming)就是用编程的方式，操作类型空间中的类型。而值编程（Value-level Programming, 即一般的编程），操作的是值空间中的值。
+
 类型编程在函数式编程语言社区由来已久，人们对Haskell和Scala的类型编程就有深入的研究，因为它们有着较强的静态类型系统。早在2006年，一个Haskell Wiki的页面中(ref)，就已经在使用Type Gymnastics(类型体操)来指代那些复杂烧脑的类型操作。下面列举了这些社区中一些常见的类型编程主题(ref: scala & haskell)：
 
 1. Church编码
@@ -78,10 +79,10 @@ TODO：示意图
 1. Effect-ts。通过类型编程实现类型安全的副作用管理。
 1. HKTS。在TypeScript的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
 
-在国内社区里也有一些非常有教益的文章：
-1. 中国象棋。通过类型编程实现一个。
+在国内的TypeScript社区里也有一些非常有教益的文章（集）：
+1. 中国象棋。如何通过类型编程实现一个中国象棋。
 1. Lisp解释器。
-1. Effective TypeScript：使用TypeScript的n个技巧。
+1. "来玩TypeScript啊，机都给你开好了！"是一个知乎TypeScript专栏。
 
 ### 类型编程背后的价值
 
@@ -256,3 +257,4 @@ Total time:       2.91s
 1. [Refinement types for TypeScript](https://dl.acm.org/doi/10.1145/2908080.2908110)
 1. [Chesskell: a two-player game at the type level](https://dl.acm.org/doi/10.1145/3471874.3472987)
 1. [OOP vs type classes](https://wiki.haskell.org/OOP_vs_type_classes)
+1. [来玩TypeScript啊，机都给你开好了！](https://www.zhihu.com/column/c_206498766)
