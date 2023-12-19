@@ -1,18 +1,55 @@
-# TypeScript类型作为目标语言
+# 理解类型编程：TypeScript到其类型系统的嵌入
 
 ## 简介
 
+类型编程 (Type-level Programming) 在函数式编程语言社区由来已久。
+
 ## 背景
 
-### TypeScript 值空间和类型空间
+### 值空间和类型空间
 
-### 值得一提的特性
+TypeScript不仅为JavaScript引入了一些新的语法和特性，最重要的是附加了一个静态的、强的类型系统，让JavaScript代码库也能够得到类型检查和现代化的语言服务。
+TypeScript的编译器`tsc`在编译代码时，会对代码进行类型检查，擦除TypeScript源码上的类型信息并将新语法和特性转译为可被纯JavaScript解释器执行的JavaScript代码。
 
-<!-- ### 类型驱动开发(TyDe) -->
+一份典型的TypeScript代码，由在编译期和运行时这两个不同时期执行的子语言交织而成。这两个语言分别负责TypeScript这门语言的静态语义和动态语义。
+1. 类型语言。
+  1. 它包括JavaScript中不存在的语法成分：如，类型别名关键字`type`和取类型操作符`typeof`，泛型的实例化记号`<>`，`:`和`enum`等。
+  1. 它包含独特的语义。由类型检查器所隐式表示的定型规则定义，在编译期通过类型检查器的类型检查被执行。
+1. JavaScript。它在运行时被JavaScript运行环境执行的JavaScript语言，承担了TypeScript的动态语义。
+
+如下面这份代码中，类型定义`type States = Array<State>;`和类型标注`: States`就是类型语言中的成分，不是合法的JavaScript成分，在JavaScript中并不存在；
+而`concat([1], [2])`则是JavaScript中的成分，不是合法的类型语言中的成分。
+
+```ts
+enum State {
+  Todo,
+  Finished
+}
+type States = Array<State>;
+function mergeStates(a: States, b: States): States {
+  return [...a, ...b];
+}
+const result = mergeStates([State.Todo], [State.Finished]);
+type Result = typeof result;
+```
+
+这两个子语言可以各自独立工作，自然地将TypeScript分为了值空间和类型空间。当我们考虑TypeScript中的一个项时，它
+有一些项同时属于类型空间和值空间，具有二态性。例如：
+
+1. 作为类构造器的`Array`，它既是值空间中的函数、类构造器，又是类型语言中的一个泛型类型；
+1. 作为枚举`enum`的`State`，它既是值空间中的一个对象，又是类型语言中的一个枚举类型。
+
+值空间中的项可以单向地转换为类型空间中的项，例如：
+
+1. 通过类型语言中的`typeof`运算符，我们可以获取一个值空间中的符号的类型，得到的类型仅存在于值空间。在TypeScript中，仅存在于类型空间的项无法对值空间产生影响。
+
+以上这些概念可以通过下图概括：
+
+TODO：示意图
 
 ## 方法
 
-### TypeScript子集的定义
+#### TypeScript子集的定义
 
 为了更好地理解TypeScript类型层编程的性质，我们需要定义一个TypeScript的图灵完备的子集，将这个子集翻译成TypeScript的类型。
 
@@ -134,6 +171,12 @@ Total time:       2.91s
 ### Playground
 
 ### Demo: 纯函数式数据结构的实现
+
+<!-- ### 类型编程背后的哲学
+
+#### 开发范式
+
+类型驱动开发(TyDe) -->
 
 ## 参考文献
 
