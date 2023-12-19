@@ -9,7 +9,7 @@
 ### 值空间和类型空间
 
 TypeScript不仅为JavaScript引入了一些新的语法和特性，最重要的是附加了一个静态的、强的类型系统，让JavaScript代码库也能够得到类型检查和现代化的语言服务。
-TypeScript的编译器`tsc`在编译代码时，会对代码进行类型检查，擦除TypeScript源码上的类型信息并将新语法和特性转译为可被纯JavaScript解释器执行的JavaScript代码。
+TypeScript的编译器`tsc`在编译代码时，会对代码进行类型检查，擦除TypeScript源码上的类型信息并将新语法和特性转译为可被JavaScript解释器执行的JavaScript代码。
 
 一份典型的TypeScript代码，由在编译期和运行时这两个不同时期执行的子语言交织而成。这两个语言分别负责TypeScript这门语言的静态语义和动态语义。
 1. 类型语言。
