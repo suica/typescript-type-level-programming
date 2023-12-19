@@ -68,8 +68,8 @@ TODO：示意图
 国外社区里：
 1. HypeScript。一个纯由TypeScript类型实现的，TypeScript解析器和类型检查器。
 1. Meta-typing。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N皇后）等等。
-1. Type-challenges。一个带有在线判题功能的，具有难度标记的TypeScript类型编程习题集。包括常用的。
-1. Type-gymnastics。包括URL解析器、整数大小比较等问题的解答。
+1. Type-challenges。一个带有在线判题功能的，具有难度标记的TypeScript类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的this类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有TypeScript类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
+2. Type-gymnastics。包括URL解析器、整数大小比较等问题的解答。
 
 在国内社区里也有一些非常好的文章：
 1. 中国象棋。
