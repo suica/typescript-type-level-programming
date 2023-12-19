@@ -1,3 +1,5 @@
+// code adapted from https://github.com/pelotom/hkts?tab=readme-ov-file
+
 declare const index: unique symbol;
 
 /**
