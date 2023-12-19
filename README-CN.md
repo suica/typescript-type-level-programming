@@ -100,6 +100,33 @@ tsc --noEmit
 
 TODO: 示意图
 
+#### 性能诊断
+
+若想获得类型检查的过程的观测性数据，可以启用`tsc`的`--diagnostics`标志：
+
+```
+tsc --diagnostics
+```
+
+执行后会额外输出一段诊断信息，展示类型检查的过程的一些计数器。例如，标识符（Identifiers）、符号（Symbols）和实例化（Instantiations，即泛型类型被填上参数成为具体类型的过程）。
+
+```
+Files:              464
+Lines:           103012
+Identifiers:     126477
+Symbols:        1196143
+Types:           593053
+Instantiations:  675088
+Memory used:    619829K
+I/O read:         0.05s
+I/O write:        0.00s
+Parse time:       0.38s
+Bind time:        0.14s
+Check time:       2.39s
+Emit time:        0.00s
+Total time:       2.91s
+```
+
 ### 翻译策略
 
 ## 实现
