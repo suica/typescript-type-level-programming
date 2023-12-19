@@ -49,7 +49,10 @@ TODO：示意图
 
 ### 类型编程
 
-类型编程 (Type-level Programming) 在函数式编程语言社区由来已久。
+类型编程 (Type-level Programming)就是用编程的方式，操作类型空间的对象。一般的编程，操作的是值空间的对象。
+类型编程在函数式编程语言社区由来已久，人们对Haskell和Scala的类型编程就有深入的研究。
+
+随着TypeScript在Web应用开发者社区的影响力日渐增强，社区对TypeScript的研究文章也逐渐增多。
 
 ## 方法
 
@@ -196,3 +199,9 @@ Total time:       2.91s
 1. [Thinking with Types: Type-Level Programming in Haskell](https://leanpub.com/thinking-with-types)
 1. [type-chess](https://github.com/chinese-chess-everywhere/type-chess)
 1. [vscode-comment-queries](https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries)
+1. [Type-Level Programming in Scala](https://apocalisp.wordpress.com/2010/06/08/type-level-programming-in-scala/)
+1. [Type-level programming with match types](https://dl.acm.org/doi/10.1145/3498698)
+1. [Generative type abstraction and type-level computation](https://dl.acm.org/doi/10.1145/1925844.1926411)
+1. [Refinement kinds: type-safe programming with practical type-level computation](https://dl.acm.org/doi/10.1145/3360557)
+1. [Refinement types for TypeScript](https://dl.acm.org/doi/10.1145/2908080.2908110)
+1. [Chesskell: a two-player game at the type level](https://dl.acm.org/doi/10.1145/3471874.3472987)
