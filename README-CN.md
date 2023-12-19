@@ -47,7 +47,7 @@ type Result = typeof result;
 
 TODO：示意图
 
-### 类型编程
+### 类型编程简介
 
 类型编程 (Type-level Programming)就是用编程的方式，操作类型空间的对象。一般的编程，操作的是值空间的对象。
 类型编程在函数式编程语言社区由来已久，人们对Haskell和Scala的类型编程就有深入的研究。
@@ -55,6 +55,8 @@ TODO：示意图
 随着TypeScript在Web应用开发者社区的影响力日渐增强，社区对TypeScript的研究文章也逐渐增多。
 
 ## 方法
+
+### TypeScript 到其类型系统的嵌入
 
 #### TypeScript子集的定义
 
