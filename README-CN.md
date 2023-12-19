@@ -187,6 +187,17 @@ Total time:       2.91s
 
 类型驱动开发(TyDe) -->
 
+## 如何掌握TypeScript类型编程
+
+- 学习。掌握TypeScript类型编程，应当从基础知识开始。
+  1. 阅读TypeScript手册(ref)。
+  1. 解答Type-challenges(ref)中尽量多的问题，同时在这个过程中反复阅读手册。
+
+- 实践。
+  1. 在平时的开发过程中发掘类型不合理的地方。使用更加精准的类型来描述业务。
+  1. 尝试使用类型先行的思想，实践类型驱动开发。在这个过程中，一定要用上AI。有问题可以询问ChatGPT或者Copilot，能够大大提高建模的效率。
+  1. 参与库的设计和改进。一个充分利用类型系统的API，能够把部分错误在编译期检查出来。
+
 ## 参考文献
 
 1. [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
