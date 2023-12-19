@@ -2,7 +2,7 @@
 
 ## 简介
 
-类型编程 (Type-level Programming) 在函数式编程语言社区由来已久。
+<!-- TODO -->
 
 ## 背景
 
@@ -46,6 +46,10 @@ type Result = typeof result;
 以上这些概念可以通过下图概括：
 
 TODO：示意图
+
+### 类型编程
+
+类型编程 (Type-level Programming) 在函数式编程语言社区由来已久。
 
 ## 方法
 
