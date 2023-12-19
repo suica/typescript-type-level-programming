@@ -6,7 +6,12 @@
 
 ## 背景
 
-### 值空间和类型空间
+首先，我们介绍一点关于TypeScript类型编程的基本知识:
+
+1. 什么是TypeScript的值空间和类型空间
+1. 什么是类型编程
+
+### TypeScript的值空间和类型空间
 
 TypeScript不仅为JavaScript引入了一些新的语法和特性，最重要的是附加了一个静态的、强的类型系统，让JavaScript代码库也能够得到类型检查和现代化的语言服务。
 TypeScript的编译器`tsc`在编译代码时，会对代码进行类型检查，擦除TypeScript源码上的类型信息并将新语法和特性转译为可被JavaScript解释器执行的JavaScript代码。
@@ -63,17 +68,20 @@ TODO：示意图
 
 (关于类型体操这个说法是否有更早的来源，以及它和英文中Mental Gymnastics以及在俄语圈中据传是Alexander Suvorov所说的"数学是思维的体操(Математика - гимнастика ума)"的关系，暂时无法考证。如果读者有线索，可以联系我们。)
 
-函数式编程社区和学术界靠的比较近，而TypeScript社区则和工业界更近。随着TypeScript自身类型系统的能力和在Web应用开发者社区的影响力日渐增强，社区对TypeScript类型编程的研究文章也逐渐增多。
+函数式编程社区和学术界靠的比较近，而TypeScript社区则和工业界更近。随着TypeScript自身类型系统的能力和在Web应用开发者社区的影响力日渐增强，社区对TypeScript类型编程的研究文章和项目也逐渐增多。
 
 国外社区里：
 1. HypeScript。一个纯由TypeScript类型实现的，TypeScript解析器和类型检查器。
 1. Meta-typing。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N皇后）等等。
 1. Type-challenges。一个带有在线判题功能的，具有难度标记的TypeScript类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的this类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有TypeScript类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
-2. Type-gymnastics。包括URL解析器、整数大小比较等问题的解答。
+1. Type-gymnastics。包括URL解析器、整数大小比较等问题的解答。
+1. Effect-ts。通过类型编程实现类型安全的副作用管理。
+1. HKTS。在TypeScript的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
 
-在国内社区里也有一些非常好的文章：
-1. 中国象棋。
+在国内社区里也有一些非常有教益的文章：
+1. 中国象棋。通过类型编程实现一个。
 1. Lisp解释器。
+1. Effective TypeScript：使用TypeScript的n个技巧。
 
 ### 类型编程背后的价值
 
@@ -82,6 +90,8 @@ TODO：示意图
 本文对此的回答是：一定程度的类型编程确实有其价值。
 
 ## 方法
+
+那么，我们应该如何理解类型编程？
 
 ### TypeScript 到其类型系统的嵌入
 
@@ -206,13 +216,9 @@ Total time:       2.91s
 
 ### Playground
 
-<!-- ### 类型编程背后的哲学
+## 结语：从类型编程到类型驱动开发
 
-#### 开发范式
-
-类型驱动开发(TyDe) -->
-
-## 结语
+<!-- 类型驱动开发(TyDe) -->
 
 那么，作为一名开发者，如何掌握TypeScript类型编程？这里提供一个思路，仅供参考。
 
@@ -233,7 +239,7 @@ Total time:       2.91s
 1. [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
 1. [Purely Functional Data Structures](https://www.cs.cmu.edu/~rwh/students/okasaki.pdf)
 1. [fp-ts](https://github.com/gcanti/fp-ts)
-1. [Effective Typescript：使用Typescript的n个技巧](https://zhuanlan.zhihu.com/p/104311029)
+1. [Effective TypeScript：使用TypeScript的n个技巧](https://zhuanlan.zhihu.com/p/104311029)
 1. [Type-Challenges](https://github.com/type-challenges/type-challenges)
 1. [hkts](https://github.com/pelotom/hkts)
 1. [HypeScript](https://github.com/ronami/HypeScript)
