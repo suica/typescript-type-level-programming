@@ -1,4 +1,4 @@
-# 理解类型编程：TypeScript到其类型系统的嵌入
+# TypeScript类型编程的一个模型：TypeScript到其类型系统的嵌入
 
 ## 简介
 
@@ -33,9 +33,10 @@ const result = mergeStates([State.Todo], [State.Finished]);
 type Result = typeof result;
 ```
 
-这两个子语言可以各自独立工作，自然地将TypeScript分为了值空间和类型空间。当我们考虑TypeScript中的一个项时，它
-有一些项同时属于类型空间和值空间，具有二态性。例如：
+这两个子语言可以各自独立存在，独立执行。这自然地将TypeScript分为了值空间和类型空间。当我们考虑TypeScript中的一个项时，它可能仅属于值空间，也可能仅属于类型空间，又或是同时属于类型空间和值空间。例如：
 
+1. 常量`result`仅属于值空间。
+1. 类型`States`仅属于类型空间。
 1. 作为类构造器的`Array`，它既是值空间中的函数、类构造器，又是类型语言中的一个泛型类型；
 1. 作为枚举`enum`的`State`，它既是值空间中的一个对象，又是类型语言中的一个枚举类型。
 
@@ -49,10 +50,36 @@ TODO：示意图
 
 ### 类型编程简介
 
-类型编程 (Type-level Programming)就是用编程的方式，操作类型空间的对象。一般的编程，操作的是值空间的对象。
-类型编程在函数式编程语言社区由来已久，人们对Haskell和Scala的类型编程就有深入的研究。
+类型编程 (Type-level Programming)就是用编程的方式，操作类型空间的对象。而值编程（Value-level Programming, 即一般的编程），操作的是值空间的对象。
+类型编程在函数式编程语言社区由来已久，人们对Haskell和Scala的类型编程就有深入的研究，因为它们有着较强的静态类型系统。早在2006年，一个Haskell Wiki的页面中(ref)，就已经在使用Type Gymnastics(类型体操)来指代那些复杂烧脑的类型操作。下面列举了这些社区中一些常见的类型编程主题(ref: scala & haskell)：
 
-随着TypeScript在Web应用开发者社区的影响力日渐增强，社区对TypeScript的研究文章也逐渐增多。
+1. Church编码
+1. Peano数所构建的自然数类型，及其上的递归函数和算术
+1. 井字棋(Tic-Tac-Toe)
+1. 存在类型（Existential Types）
+1. 高阶类型(Higher-kinded Types)
+1. 广义代数数据类型(GADTs)
+1. 依赖类型(Dependent Types)
+
+(关于类型体操这个说法是否有更早的来源，以及它和英文中Mental Gymnastics以及在俄语圈中据传是Alexander Suvorov所说的"数学是思维的体操(Математика - гимнастика ума)"的关系，暂时无法考证。如果读者有线索，可以联系我们。)
+
+函数式编程社区和学术界靠的比较近，而TypeScript社区则和工业界更近。随着TypeScript自身类型系统的能力和在Web应用开发者社区的影响力日渐增强，社区对TypeScript类型编程的研究文章也逐渐增多。
+
+国外社区里：
+1. HypeScript。一个纯由TypeScript类型实现的，TypeScript解析器和类型检查器。
+1. Meta-typing。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N皇后）等等。
+1. Type-challenges。一个带有在线判题功能的，具有难度标记的TypeScript类型编程习题集。包括常用的。
+1. Type-gymnastics。包括URL解析器、整数大小比较等问题的解答。
+
+在国内社区里也有一些非常好的文章：
+1. 中国象棋。
+1. Lisp解释器。
+
+### 类型编程背后的价值
+
+谈起类型编程，有一个避不开的问题：类型编程究竟是没事找事的消遣，还是对开发者、业务来说真有其价值？
+
+本文对此的回答是：一定程度的类型编程确实有其价值。
 
 ## 方法
 
@@ -179,15 +206,18 @@ Total time:       2.91s
 
 ### Playground
 
-### Demo: 纯函数式数据结构的实现
-
 <!-- ### 类型编程背后的哲学
 
 #### 开发范式
 
 类型驱动开发(TyDe) -->
 
-## 如何掌握TypeScript类型编程
+
+## 结论
+
+### TypeScript类型编程的模型
+
+### 如何掌握TypeScript类型编程
 
 - 学习。掌握TypeScript类型编程，应当从基础知识开始。
   1. 阅读TypeScript手册(ref)。
@@ -209,6 +239,7 @@ Total time:       2.91s
 1. [HypeScript](https://github.com/ronami/HypeScript)
 1. [TypeScripts Type System is Turing Complete](https://github.com/microsoft/TypeScript/issues/14833)
 1. [write-you-a-typescript](https://github.com/suica/write-you-a-typescript)
+1. [type-gymnastics](https://github.com/g-plane/type-gymnastics)
 1. [Thinking with Types: Type-Level Programming in Haskell](https://leanpub.com/thinking-with-types)
 1. [type-chess](https://github.com/chinese-chess-everywhere/type-chess)
 1. [vscode-comment-queries](https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries)
@@ -218,3 +249,4 @@ Total time:       2.91s
 1. [Refinement kinds: type-safe programming with practical type-level computation](https://dl.acm.org/doi/10.1145/3360557)
 1. [Refinement types for TypeScript](https://dl.acm.org/doi/10.1145/2908080.2908110)
 1. [Chesskell: a two-player game at the type level](https://dl.acm.org/doi/10.1145/3471874.3472987)
+1. [OOP vs type classes](https://wiki.haskell.org/OOP_vs_type_classes)
