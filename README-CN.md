@@ -94,10 +94,13 @@ TODO：示意图
 1. 中国象棋[^type-chess]。如何通过类型编程实现一个中国象棋。
 2. Lisp 解释器[^Lisp-interpreter]。
 3. "来玩 TypeScript 啊，机都给你开好了！"[^zhihu-typescript]。是一个知乎上的 TypeScript 专栏。
+4. 《Effective TypeScript：使用 TypeScript 的 n 个技巧》[^Effective TypeScript：使用 TypeScript 的 n 个技巧]。
 
 [^type-chess]: https://github.com/chinese-chess-everywhere/type-chess
 [^Lisp-interpreter]: https://zhuanlan.zhihu.com/p/427309936
 [^zhihu-typescript]: https://www.zhihu.com/column/c_206498766
+
+[^Effective TypeScript：使用 TypeScript 的 n 个技巧]: https://zhuanlan.zhihu.com/p/104311029
 
 ### 重新思考类型编程的价值
 
@@ -434,7 +437,6 @@ Total time:       2.91s
 
 [^Purely Functional Data Structures]: https://www.cs.cmu.edu/~rwh/students/okasaki.pdf
 [^fp-ts]: https://github.com/gcanti/fp-ts
-[^Effective TypeScript：使用 TypeScript 的 n 个技巧]: https://zhuanlan.zhihu.com/p/104311029
 [^TypeScripts Type System is Turing Complete]: https://github.com/microsoft/TypeScript/issues/14833
 [^write-you-a-typescript]: https://github.com/suica/write-you-a-typescript
 [^vscode-comment-queries]: https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries
