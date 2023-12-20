@@ -99,13 +99,13 @@ type Result = typeof result;
 [^thinking-with-types]: https://leanpub.com/thinking-with-types
 [^type-level-programming-in-scala]: https://apocalisp.wordpress.com/2010/06/08/type-level-programming-in-scala/
 
-注：关于类型体操这个说法是否有更早的来源，以及它和英文中 Mental Gymnastics 以及在俄语圈中据传是 Alexander Suvorov 所说的"数学是思维的体操(Математика - гимнастика ума)"的关系，暂时无法考证。如果读者有线索，可以联系我们。
+> 注：关于类型体操这个说法是否有更早的来源，以及它和英文中 Mental Gymnastics 以及在俄语圈中据传是 Alexander Suvorov 所说的"数学是思维的体操(Математика - гимнастика ума)"的关系，暂时无法考证。如果读者有线索，可以联系我们。
 
 函数式编程社区和学术界靠的比较近，而 TypeScript 社区则和工业界更近。随着 TypeScript 自身类型系统的能力和在 Web 应用开发者社区的影响力日渐增强，社区对 TypeScript 类型编程的研究文章和项目也逐渐增多。
 
 国外社区里：
 
-1. 《TypeScript 类型系统是图灵完备的》[^TypeScripts-Type-System-is-Turing-Complete]。早期关于 TypeScript 的类型系统的图灵完备性的证明。
+1. 《TypeScript 类型系统是图灵完备的》[^TypeScripts-Type-System-is-Turing-Complete]。早期关于 TypeScript 的类型系统的图灵完备性的讨论，是理解 TypeScript 类型编程绕不开的一篇文章。
 1. HypeScript[^HypeScript]。一个纯由 TypeScript 类型实现的，TypeScript 解析器和类型检查器。
 1. Meta-typing[^meta-typing]。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
 1. Type-challenges[^type-challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
@@ -197,10 +197,10 @@ commit(lint(code)); // 正确，不报错
 | `reduce`实现迭代 `const sum = (nums: number[], init: number)=>nums.reduce((acc,cur)=> acc+cur, init)` | 使用递归泛型模拟迭代过程 `type Sum<arr extends Nat[], result extends Nat = Zero> = arr extends [infer cur, ... infer rest] ? Sum<rest, Add<result, cur>> : result;` |
 | 高阶函数 const apply1 = (f, arg) => f(arg)                                                            | 编码高阶类型 `type Apply1<f, arg> = $<f, arg>;`                                                                                                                     |
 
-注：
-
-1. 类型编程的元素一栏中，有些代码块并不是完整的，需要将其声明为一个类型，即在前面加上`type XXX = `才符合 TypeScript 的类型语言语法。
-1. 泛型类型也可以理解为类型层面的函数，因为它接受一些类型返回另外一个类型，正如值空间中的函数接受一些值返回另外一个值。另可称呼为类型函数(Type Functions)、类型构造器(Type Constructors)、类型算子(Type Operators)，本文为了便于理解，采用了泛型类型的称呼。
+> 注：
+>
+> 1. 类型编程的元素一栏中，有些代码块并不是完整的，需要将其声明为一个类型，即在前面加上`type XXX = `才符合 TypeScript 的类型语言语法。
+> 1. 泛型类型也可以理解为类型层面的函数，因为它接受一些类型返回另外一个类型，正如值空间中的函数接受一些值返回另外一个值。另可称呼为类型函数(Type Functions)、类型构造器(Type Constructors)、类型算子(Type Operators)，本文为了便于理解，采用了泛型类型的称呼。
 
 自然数在 TypeScript 类型编程中的编码极为重要，因此我们着重介绍一下：
 
@@ -321,7 +321,7 @@ type Apply<f, arguments extends any[]> = 将arguments应用在f上???;
 
 [^Effect-Higher-Kinded-Types]: https://www.effect.website/docs/behaviour/hkt
 
-注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
+> 注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
 
 #### TypeScript 子集的定义
 
