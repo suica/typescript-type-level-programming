@@ -58,13 +58,17 @@ TODO：示意图
 
 类型编程在函数式编程语言社区由来已久，人们对 Haskell 和 Scala 的类型编程就有深入的研究，因为它们有着较强的静态类型系统。早在 2006 年，一个 Haskell Wiki 的页面中(ref)，就已经在使用 Type Gymnastics(类型体操)来指代那些复杂烧脑的类型操作。下面列举了这些社区中一些常见的类型编程主题：
 
-1. Church 编码 [Thinking with Types: Type-Level Programming in Haskell] [Type-Level Programming in Scala]
-1. Peano 数所构建的自然数类型，及其上的递归函数和算术 [Thinking with Types: Type-Level Programming in Haskell] [Type-Level Programming in Scala]
-1. 井字棋(Tic-Tac-Toe) [Type-Level Programming in Scala]
-1. 存在类型（Existential Types）[Thinking with Types: Type-Level Programming in Haskell]
-1. 高阶类型(Higher-kinded Types) [Thinking with Types: Type-Level Programming in Haskell]
-1. 广义代数数据类型(GADTs) [Thinking with Types: Type-Level Programming in Haskell]
-1. 依赖类型(Dependent Types) [Thinking with Types: Type-Level Programming in Haskell]
+1. Church 编码 [^type-level-programming-haskell] [^Type-Level Programming in Scala]
+1. Peano 数所构建的自然数类型，及其上的递归函数和算术 [^type-level-programming-haskell] [^Type-Level Programming in Scala]
+1. 井字棋(Tic-Tac-Toe) [^Type-Level Programming in Scala]
+1. 存在类型（Existential Types）[^type-level-programming-haskell]
+1. 高阶类型(Higher-kinded Types) [^type-level-programming-haskell]
+1. 广义代数数据类型(GADTs) [^type-level-programming-haskell]
+1. 依赖类型(Dependent Types) [^type-level-programming-haskell]
+
+[^type-level-programming-haskell]: https://leanpub.com/thinking-with-types
+
+[^Type-Level Programming in Scala]: https://apocalisp.wordpress.com/2010/06/08/type-level-programming-in-scala/
 
 (关于类型体操这个说法是否有更早的来源，以及它和英文中 Mental Gymnastics 以及在俄语圈中据传是 Alexander Suvorov 所说的"数学是思维的体操(Математика - гимнастика ума)"的关系，暂时无法考证。如果读者有线索，可以联系我们。)
 
@@ -73,31 +77,28 @@ TODO：示意图
 国外社区里：
 
 1. HypeScript[^HypeScript]。一个纯由 TypeScript 类型实现的，TypeScript 解析器和类型检查器。
-1. Meta-typing[^meta-typing]。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
-1. Type-challenges[^Type-Challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
-1. Type-gymnastics[^type-gymnastics]。包括 URL 解析器、整数大小比较等问题的解答。
-1. HKTS[^HKTS]。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
-1. Effect[^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
+2. Meta-typing[^meta-typing]。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
+3. Type-challenges[^Type-Challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
+4. Type-gymnastics[^type-gymnastics]。包括 URL 解析器、整数大小比较等问题的解答。
+5. HKTS[^HKTS]。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
+6. Effect[^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
 
 [^HypeScript]: https://github.com/ronami/HypeScript
 [^meta-typing]: https://github.com/ronami/meta-typing
 [^Type-Challenges]: https://github.com/type-challenges/type-challenges
 [^type-gymnastics]: https://github.com/g-plane/type-gymnastics
 [^HKTS]: https://github.com/pelotom/hkts
-
-[^Effect - Higher-Kinded Types]: https://www.effect.website/docs/behaviour/hkt
-
 [^Effect]: https://github.com/Effect-TS/effect
 
 在国内的 TypeScript 社区里也有一些非常有教益的文章（集）：
 
-1. 中国象棋[type-chess]。如何通过类型编程实现一个中国象棋。
-2. Lisp 解释器[Lisp-interpreter]。
-3. "来玩 TypeScript 啊，机都给你开好了！"[zhihu-typescript]。是一个知乎上的 TypeScript 专栏。
+1. 中国象棋[^type-chess]。如何通过类型编程实现一个中国象棋。
+2. Lisp 解释器[^Lisp-interpreter]。
+3. "来玩 TypeScript 啊，机都给你开好了！"[^zhihu-typescript]。是一个知乎上的 TypeScript 专栏。
 
-[type-chess]: https://github.com/chinese-chess-everywhere/type-chess
-[Lisp-interpreter]: https://zhuanlan.zhihu.com/p/427309936
-[zhihu-typescript]: https://www.zhihu.com/column/c_206498766
+[^type-chess]: https://github.com/chinese-chess-everywhere/type-chess
+[^Lisp-interpreter]: https://zhuanlan.zhihu.com/p/427309936
+[^zhihu-typescript]: https://www.zhihu.com/column/c_206498766
 
 ### 重新思考类型编程的价值
 
@@ -280,7 +281,9 @@ type Apply<f, arguments extends any[]> = 将arguments应用在f上???;
 
 #### 实现高阶类型
 
-在 TypeScript 社区中，也有不少关于高阶类型的研究，其中较新的一个实现来自 Effect[Effect - Higher-Kinded Types].
+在 TypeScript 社区中，也有不少关于高阶类型的研究，其中较新的一个实现来自 Effect[^Effect - Higher-Kinded Types].
+
+[^Effect - Higher-Kinded Types]: https://www.effect.website/docs/behaviour/hkt
 
 注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
 
@@ -434,9 +437,7 @@ Total time:       2.91s
 [Effective TypeScript：使用 TypeScript 的 n 个技巧]: https://zhuanlan.zhihu.com/p/104311029
 [TypeScripts Type System is Turing Complete]: https://github.com/microsoft/TypeScript/issues/14833
 [write-you-a-typescript]: https://github.com/suica/write-you-a-typescript
-[Thinking with Types: Type-Level Programming in Haskell]: https://leanpub.com/thinking-with-types
 [vscode-comment-queries]: https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries
-[Type-Level Programming in Scala]: https://apocalisp.wordpress.com/2010/06/08/type-level-programming-in-scala/
 [Type-level programming with match types]: https://dl.acm.org/doi/10.1145/3498698
 [Generative type abstraction and type-level computation]: https://dl.acm.org/doi/10.1145/1925844.1926411
 [Refinement kinds: type-safe programming with practical type-level computation]: https://dl.acm.org/doi/10.1145/3360557
