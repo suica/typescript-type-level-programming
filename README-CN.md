@@ -443,7 +443,7 @@ Total time:       2.91s
 
 - 步骤三：回到步骤一。
 
-## 参考文献
+<h2> 参考文献 </h2>
 
 [^Purely-Functional-Data-Structures]: https://www.cs.cmu.edu/~rwh/students/okasaki.pdf
 [^fp-ts]: https://github.com/gcanti/fp-ts
