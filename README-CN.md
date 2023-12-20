@@ -58,6 +58,8 @@ TODO：示意图
 
 类型编程在函数式编程语言社区由来已久，人们对 Haskell 和 Scala 的类型编程就有深入的研究，因为它们有着较强的静态类型系统。早在 2006 年，一个 Haskell Wiki 的页面中[^OOP-vs-type-classes]，就已经在使用 Type Gymnastics(类型体操)来指代那些复杂烧脑的类型操作。下面列举了这些社区中一些常见的类型编程主题：
 
+[^OOP-vs-type-classes]: https://wiki.haskell.org/OOP_vs_type_classes
+
 1. Church 编码 [^thinking-with-types] [^type-level-programming-in-scala]
 1. Peano 数所构建的自然数类型，及其上的递归函数和算术 [^thinking-with-types] [^type-level-programming-in-scala]
 1. 井字棋(Tic-Tac-Toe) [^type-level-programming-in-scala]
@@ -92,15 +94,14 @@ TODO：示意图
 在国内的 TypeScript 社区里也有一些非常有教益的文章（集）：
 
 1. 中国象棋[^type-chess]。如何通过类型编程实现一个中国象棋。
-2. Lisp 解释器[^Lisp-interpreter]。
+2. Lisp 解释器[^lisp-interpreter]。
 3. "来玩 TypeScript 啊，机都给你开好了！"[^zhihu-typescript]。是一个知乎上的 TypeScript 专栏。
-4. 《Effective TypeScript：使用 TypeScript 的 n 个技巧》[^Effective TypeScript：使用 TypeScript 的 n 个技巧]。
+4. 《Effective TypeScript：使用 TypeScript 的 n 个技巧》[^effective-ts-zhihu]。
 
 [^type-chess]: https://github.com/chinese-chess-everywhere/type-chess
-[^Lisp-interpreter]: https://zhuanlan.zhihu.com/p/427309936
+[^lisp-interpreter]: https://zhuanlan.zhihu.com/p/427309936
 [^zhihu-typescript]: https://www.zhihu.com/column/c_206498766
-
-[^Effective TypeScript：使用 TypeScript 的 n 个技巧]: https://zhuanlan.zhihu.com/p/104311029
+[^effective-ts-zhihu]: https://zhuanlan.zhihu.com/p/104311029
 
 ### 重新思考类型编程的价值
 
@@ -112,7 +113,9 @@ TODO：示意图
 
 而对库设计的场景来说，一个有一定复杂度的类型带来的很可能是类型安全的接口和开发者良好的补全体验，更不用说能够把许多潜在的错误在编译期暴露出来了。举个例子，若是 Vue 2 在一开始就通过类型编程提供完善的类型定义，甚至为了类型安全反过来约束框架本身的设计，那么开发者就不必在使用 TypeScript 时面对满屏幕的 any 了，也能够将一些不合法的调用拦在编译期。
 
-再考虑业务开发的场景。假定我们需要写一个流程管理逻辑，由多个函数组成。我们必须要按照一定的顺序来组织这些流程。这就非常适合使用类型编程。
+再考虑业务开发的场景。假定我们需要写一个流程管理逻辑，由多个函数组成。我们必须要按照一定的顺序来组织这些流程。这就非常适合使用类型编程。例子如下[^write-you-a-typescript]：
+
+[^write-you-a-typescript]: https://github.com/suica/write-you-a-typescript
 
 ```ts
 // 例子来自 TODO: ref
@@ -374,10 +377,14 @@ tsc --noEmit
 类型查询分为手动的基于注释的嵌入提示、自动的嵌入提示两种：
 
 1. 基于注释的嵌入提示(Inlay Hint)。
-1. TypeScript Playground 内，写上`// ^?`，并让`^`的箭头对准你想要查询类型的元素（类型和值都可以），就会通过嵌入提示展示出类型，一目了然。
-1. VS Code 中，也有类似插件 (vscode-comment-queries)，同时支持 Python/Go 等语言，和更加丰富的查询语法（如，`//  _?` 查询`_`下一行同一个列的元素的类型）。
+
+   1. TypeScript Playground 内，写上`// ^?`，并让`^`的箭头对准你想要查询类型的元素（类型和值都可以），就会通过嵌入提示展示出类型，一目了然。
+   1. VS Code 中，也有类似插件 [^vscode-comment-queries]，同时支持 Python/Go 等语言，和更加丰富的查询语法（如，`//  _?` 查询`_`下一行同一个列的元素的类型）。
+
 1. 自动嵌入提示。
-1. VS Code 和 WebStorm 均可在设置中开启 JavaScript/TypeScript 类型的嵌入提示。关于要对哪些元素进行自动的类型嵌入提示，同样可以配置，请自行探索。
+   1. VS Code 和 WebStorm 均可在设置中开启 JavaScript/TypeScript 类型的嵌入提示。关于要对哪些元素进行自动的类型嵌入提示，同样可以配置，请自行探索。
+
+[^vscode-comment-queries]: https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries
 
 TODO: 示意图
 
@@ -438,11 +445,9 @@ Total time:       2.91s
 [^Purely Functional Data Structures]: https://www.cs.cmu.edu/~rwh/students/okasaki.pdf
 [^fp-ts]: https://github.com/gcanti/fp-ts
 [^TypeScripts Type System is Turing Complete]: https://github.com/microsoft/TypeScript/issues/14833
-[^write-you-a-typescript]: https://github.com/suica/write-you-a-typescript
-[^vscode-comment-queries]: https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries
+
 [^Type-level programming with match types]: https://dl.acm.org/doi/10.1145/3498698
 [^Generative type abstraction and type-level computation]: https://dl.acm.org/doi/10.1145/1925844.1926411
 [^Refinement kinds: type-safe programming with practical type-level computation]: https://dl.acm.org/doi/10.1145/3360557
 [^Refinement types for TypeScript]: https://dl.acm.org/doi/10.1145/2908080.2908110
 [^Chesskell: a two-player game at the type level]: https://dl.acm.org/doi/10.1145/3471874.3472987
-[^OOP-vs-type-classes]: https://wiki.haskell.org/OOP_vs_type_classes
