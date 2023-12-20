@@ -15,6 +15,12 @@ type MakeArityConstraint<
   ? res_nat
   : MakeArityConstraint<T, [unknown, ...res_nat]>;
 
+type TestMakeArityConstraint = [
+  Expect<EQUALS<MakeArityConstraint<0>, []>>,
+  Expect<EQUALS<MakeArityConstraint<1>, [unknown]>>,
+  Expect<EQUALS<MakeArityConstraint<2>, [unknown, unknown]>>,
+];
+
 type ReplaceFirstUnknownWith<
   Arr extends any[],
   item,

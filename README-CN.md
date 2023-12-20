@@ -313,7 +313,7 @@ type Apply<f, arguments extends any[]> = 将arguments应用在f上???;
 
 完成了这两个目标，我们就成功地构造出了高阶类型，也就可以在类型编程中自由地传递泛型了。
 
-#### 实现高阶类型
+#### 高阶类型的实现及其扩展
 
 在 TypeScript 社区中，也有不少关于高阶类型的研究，其中较新的一个实现来自 Effect [^Effect-Higher-Kinded-Types].
 
@@ -366,6 +366,8 @@ type BasicAddHKT = Expect<Equal<Apply<AddHKT, [1], [1, 1]>['length'], 3>>;
 1. 改造`Apply`得到`PartialApply`，使其支持部分应用。
 1. 改造`HKT`类，并提供工具类型`HKTWithArity`，使其支持任意元数。
 
+为了让这份代码通过类型检查，我们需要一个工具类型`Assert<T, P>`。简单来说，它断言`T`是`P`的子类型。加上了这个断言，`Add`的两个参数就都必定为`Nat`类型了。
+
 ```ts
 type Assert<T, P> = T extends P ? T : /* T若非P的子类型就报错 */ never;
 interface AddHKT extends HKT {
@@ -374,9 +376,70 @@ interface AddHKT extends HKT {
 type TestAddHKT = Apply<AddHKT, [1], [1, 1]>['length'];
 ```
 
+接着，我们可以改造`Apply`，得到`PartialApply`。其核心逻辑是：
+
+1. 检查到传入的`lambda`还需要几个类型参数。
+2. 若为 0 个，`lambda['type']`已经存储着一个实例化完毕的类型，直接返回`lambda['type']`。
+3. 若还需要类型参数，尝试从 `arguments` 中拿一个元素。若`arguments`已空，直接返回`lambda`。否则，进行一次应用，并回到第 1 步。
+
+```ts
+type PartialApply<lambda, arguments extends unknown[]> = lambda extends HKT
+  ? arguments['length'] extends 0
+    ? Equal<lambda['TypeArguments'][number], unknown> extends false
+      ? lambda['type']
+      : lambda
+    : PartialApply<Kind<lambda, arguments[0]>, TAIL<arguments>>
+  : lambda;
+type TestApplication = [
+  Expect<EQUALS<PartialApply<number, []>, number>>,
+  Expect<
+    EQUALS<
+      PartialApply<PartialApply<MapHKT, [string]>, [number]>,
+      Map<string, number>
+    >
+  >,
+];
+```
+
+接下来，我们改造`HKT`类，并提供工具类型`HKTWithArity`，使其支持任意元数(Arity)。
+
+```ts
+type MakeArityConstraint<
+  T extends number,
+  res_nat extends unknown[] = [],
+> = EQUALS<T, number> extends true
+  ? unknown[]
+  : T extends 0
+  ? []
+  : EQUALS<T, res_nat['length']> extends true
+  ? res_nat
+  : MakeArityConstraint<T, [unknown, ...res_nat]>;
+
+type TestMakeArityConstraint = [
+  Expect<EQUALS<MakeArityConstraint<0>, []>>,
+  Expect<EQUALS<MakeArityConstraint<1>, [unknown]>>,
+  Expect<EQUALS<MakeArityConstraint<2>, [unknown, unknown]>>,
+];
+
+interface HKTWithArity<Arity extends number> extends HKT {
+  readonly TypeArguments: MakeArityConstraint<Arity>;
+}
+```
+
+这样一来，我们就可以改写`AddHKT`，让它继承`HKTWithArity<2>`，实现对元数的约束。
+
+```ts
+interface BetterAddHKT extends HKTWithArity<2> {
+  type: Add<
+    Assert<this['TypeArguments'][0], Nat>,
+    Assert<this['TypeArguments'][1], Nat>
+  >;
+}
+```
+
 [^Effect-Higher-Kinded-Types]: https://www.effect.website/docs/behaviour/hkt
 
-> 注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
+> 注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现 HKT [^HKTS]。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
 
 #### TypeScript 子集的定义
 
