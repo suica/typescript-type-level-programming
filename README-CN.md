@@ -383,7 +383,7 @@ tsc --noEmit
 1. 基于注释的嵌入提示(Inlay Hint)。
 
    1. TypeScript Playground 内，写上`// ^?`，并让`^`的箭头对准你想要查询类型的元素（类型和值都可以），就会通过嵌入提示展示出类型，一目了然。
-   1. VS Code 中，也有类似插件 [^vscode-comment-queries]，同时支持 Python/Go 等语言，和更加丰富的查询语法（如，`//  _?` 查询`_`下一行同一个列的元素的类型）。
+   1. VS Code 中，也有类似插件 vscode-comment-queries [^vscode-comment-queries]，同时支持 Python/Go 等语言，和更加丰富的查询语法（如，`//  _?` 查询`_`下一行同一个列的元素的类型）。
 
 1. 自动嵌入提示。
    1. VS Code 和 WebStorm 均可在设置中开启 JavaScript/TypeScript 类型的嵌入提示。关于要对哪些元素进行自动的类型嵌入提示，同样可以配置，请自行探索。
