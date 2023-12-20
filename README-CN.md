@@ -37,6 +37,34 @@ const result = mergeStates([State.Todo], [State.Finished]);
 type Result = typeof result;
 ```
 
+其 JavaScript 的部分为：
+
+```js
+const State = {
+  Todo: 0,
+  Finished: 1,
+  0: 'Todo',
+  1: 'Finished',
+};
+function mergeStates(a, b) {
+  return [...a, ...b];
+}
+const result = mergeStates([State.Todo], [State.Finished]);
+```
+
+其类型语言的部分：
+
+```ts
+enum State {
+  Todo,
+  Finished,
+}
+type States = Array<State>;
+declare function mergeStates(a: States, b: States): States;
+declare const result: States;
+type Result = typeof result;
+```
+
 这两个子语言可以各自独立存在，独立执行。这自然地将 TypeScript 分为了值空间和类型空间。当我们考虑 TypeScript 中的一个项时，它可能仅属于值空间，也可能仅属于类型空间，又或是同时属于类型空间和值空间。例如：
 
 1. 常量`result`是值，仅属于值空间。
