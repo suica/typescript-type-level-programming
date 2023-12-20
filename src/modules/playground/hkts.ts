@@ -1,4 +1,4 @@
-// code adapted from https://github.com/pelotom/hkts?tab=readme-ov-file
+// code from https://github.com/pelotom/hkts?tab=readme-ov-file
 
 declare const index: unique symbol;
 
@@ -33,21 +33,24 @@ export interface Fixed<T> {
  * Type application (simultaneously substitutes all placeholders within the target type)
  */
 // prettier-ignore
-export type $<T, S extends any[]> = (T extends Fixed<infer U>
-  ? [U]
-  : T extends _<infer N>
-  ? [S[N]]
-  : T extends undefined | null | boolean | string | number
-  ? [T]
-  : T extends (infer A)[] & { length: infer L }
-  ? [L extends keyof TupleTable ? TupleTable<T, S>[L] : $<A, S>[]]
-  : T extends (...x: infer I) => infer O
-  ? [(...x: $<I, S>) => $<O, S>]
-  : T extends object
-  ? [{ [K in keyof T]: $<T[K], S> }]
-  : [T]
-)[0];
+export type $<T, S extends any[]> = (
+  T extends Fixed<infer U> ? { [indirect]: U } :
+  T extends _<infer N> ? { [indirect]: S[N] } :
+  T extends undefined | null | boolean | string | number ? { [indirect]: T } :
+  T extends (infer A)[] & { length: infer L } ? {
+    [indirect]: L extends keyof TupleTable
+      ? TupleTable<T, S>[L]
+      : $<A, S>[]
+  } :
+  T extends (...x: infer I) => infer O ? { [indirect]: (...x: $<I, S>) => $<O, S> } :
+  T extends object ? { [indirect]: { [K in keyof T]: $<T[K], S> } } :
+  { [indirect]: T }
+)[typeof indirect];
 
+/**
+ * Used as a level of indirection to avoid circularity errors.
+ */
+declare const indirect: unique symbol;
 
 /**
  * Allows looking up the type for a tuple based on its `length`, instead of trying
