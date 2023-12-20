@@ -56,7 +56,7 @@ TODO：示意图
 
 类型编程 (Type-level Programming)就是用编程的方式，操作类型空间中的类型。而值编程（Value-level Programming, 即一般的编程），操作的是值空间中的值。
 
-类型编程在函数式编程语言社区由来已久，人们对 Haskell 和 Scala 的类型编程就有深入的研究，因为它们有着较强的静态类型系统。早在 2006 年，一个 Haskell Wiki 的页面中(ref)，就已经在使用 Type Gymnastics(类型体操)来指代那些复杂烧脑的类型操作。下面列举了这些社区中一些常见的类型编程主题：
+类型编程在函数式编程语言社区由来已久，人们对 Haskell 和 Scala 的类型编程就有深入的研究，因为它们有着较强的静态类型系统。早在 2006 年，一个 Haskell Wiki 的页面中[^OOP-vs-type-classes]，就已经在使用 Type Gymnastics(类型体操)来指代那些复杂烧脑的类型操作。下面列举了这些社区中一些常见的类型编程主题：
 
 1. Church 编码 [^thinking-with-types] [^type-level-programming-in-scala]
 1. Peano 数所构建的自然数类型，及其上的递归函数和算术 [^thinking-with-types] [^type-level-programming-in-scala]
@@ -69,7 +69,7 @@ TODO：示意图
 [^thinking-with-types]: https://leanpub.com/thinking-with-types
 [^type-level-programming-in-scala]: https://apocalisp.wordpress.com/2010/06/08/type-level-programming-in-scala/
 
-(关于类型体操这个说法是否有更早的来源，以及它和英文中 Mental Gymnastics 以及在俄语圈中据传是 Alexander Suvorov 所说的"数学是思维的体操(Математика - гимнастика ума)"的关系，暂时无法考证。如果读者有线索，可以联系我们。)
+注：关于类型体操这个说法是否有更早的来源，以及它和英文中 Mental Gymnastics 以及在俄语圈中据传是 Alexander Suvorov 所说的"数学是思维的体操(Математика - гимнастика ума)"的关系，暂时无法考证。如果读者有线索，可以联系我们。
 
 函数式编程社区和学术界靠的比较近，而 TypeScript 社区则和工业界更近。随着 TypeScript 自身类型系统的能力和在 Web 应用开发者社区的影响力日渐增强，社区对 TypeScript 类型编程的研究文章和项目也逐渐增多。
 
@@ -77,7 +77,7 @@ TODO：示意图
 
 1. HypeScript[^HypeScript]。一个纯由 TypeScript 类型实现的，TypeScript 解析器和类型检查器。
 2. Meta-typing[^meta-typing]。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
-3. Type-challenges[^Type-Challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
+3. Type-challenges[^type-challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
 4. Type-gymnastics[^type-gymnastics]。包括 URL 解析器、整数大小比较等问题的解答。
 5. HKTS[^HKTS]。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
 6. Effect[^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
@@ -417,8 +417,10 @@ Total time:       2.91s
 
 - 步骤一：学习。掌握 TypeScript 类型编程，应当从基础知识开始。
 
-  1. 阅读 TypeScript 手册(ref)。
-  1. 解答 Type-challenges(ref)中尽量多的问题，同时在这个过程中反复阅读手册。
+  1. 阅读 TypeScript 手册[^typescript-handbook]。
+  1. 解答 Type-challenges[^type-challenges]中尽量多的问题，同时在这个过程中反复阅读手册。
+
+[^typescript-handbook]: https://www.typescriptlang.org/docs/handbook/intro.html
 
 - 步骤二：实践。
 
@@ -430,16 +432,15 @@ Total time:       2.91s
 
 ## 参考文献
 
-[TypeScript Handbook]: https://www.typescriptlang.org/docs/handbook/intro.html
-[Purely Functional Data Structures]: https://www.cs.cmu.edu/~rwh/students/okasaki.pdf
-[fp-ts]: https://github.com/gcanti/fp-ts
-[Effective TypeScript：使用 TypeScript 的 n 个技巧]: https://zhuanlan.zhihu.com/p/104311029
-[TypeScripts Type System is Turing Complete]: https://github.com/microsoft/TypeScript/issues/14833
-[write-you-a-typescript]: https://github.com/suica/write-you-a-typescript
-[vscode-comment-queries]: https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries
-[Type-level programming with match types]: https://dl.acm.org/doi/10.1145/3498698
-[Generative type abstraction and type-level computation]: https://dl.acm.org/doi/10.1145/1925844.1926411
-[Refinement kinds: type-safe programming with practical type-level computation]: https://dl.acm.org/doi/10.1145/3360557
-[Refinement types for TypeScript]: https://dl.acm.org/doi/10.1145/2908080.2908110
-[Chesskell: a two-player game at the type level]: https://dl.acm.org/doi/10.1145/3471874.3472987
-[OOP vs type classes]: https://wiki.haskell.org/OOP_vs_type_classes
+[^Purely Functional Data Structures]: https://www.cs.cmu.edu/~rwh/students/okasaki.pdf
+[^fp-ts]: https://github.com/gcanti/fp-ts
+[^Effective TypeScript：使用 TypeScript 的 n 个技巧]: https://zhuanlan.zhihu.com/p/104311029
+[^TypeScripts Type System is Turing Complete]: https://github.com/microsoft/TypeScript/issues/14833
+[^write-you-a-typescript]: https://github.com/suica/write-you-a-typescript
+[^vscode-comment-queries]: https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries
+[^Type-level programming with match types]: https://dl.acm.org/doi/10.1145/3498698
+[^Generative type abstraction and type-level computation]: https://dl.acm.org/doi/10.1145/1925844.1926411
+[^Refinement kinds: type-safe programming with practical type-level computation]: https://dl.acm.org/doi/10.1145/3360557
+[^Refinement types for TypeScript]: https://dl.acm.org/doi/10.1145/2908080.2908110
+[^Chesskell: a two-player game at the type level]: https://dl.acm.org/doi/10.1145/3471874.3472987
+[^OOP-vs-type-classes]: https://wiki.haskell.org/OOP_vs_type_classes
