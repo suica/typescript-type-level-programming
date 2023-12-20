@@ -56,15 +56,15 @@ TODO：示意图
 
 类型编程 (Type-level Programming)就是用编程的方式，操作类型空间中的类型。而值编程（Value-level Programming, 即一般的编程），操作的是值空间中的值。
 
-类型编程在函数式编程语言社区由来已久，人们对 Haskell 和 Scala 的类型编程就有深入的研究，因为它们有着较强的静态类型系统。早在 2006 年，一个 Haskell Wiki 的页面中(ref)，就已经在使用 Type Gymnastics(类型体操)来指代那些复杂烧脑的类型操作。下面列举了这些社区中一些常见的类型编程主题(ref: scala & haskell)：
+类型编程在函数式编程语言社区由来已久，人们对 Haskell 和 Scala 的类型编程就有深入的研究，因为它们有着较强的静态类型系统。早在 2006 年，一个 Haskell Wiki 的页面中(ref)，就已经在使用 Type Gymnastics(类型体操)来指代那些复杂烧脑的类型操作。下面列举了这些社区中一些常见的类型编程主题：
 
-1. Church 编码
-1. Peano 数所构建的自然数类型，及其上的递归函数和算术
-1. 井字棋(Tic-Tac-Toe)
-1. 存在类型（Existential Types）
-1. 高阶类型(Higher-kinded Types)
-1. 广义代数数据类型(GADTs)
-1. 依赖类型(Dependent Types)
+1. Church 编码 [Thinking with Types: Type-Level Programming in Haskell] [Type-Level Programming in Scala]
+1. Peano 数所构建的自然数类型，及其上的递归函数和算术 [Thinking with Types: Type-Level Programming in Haskell] [Type-Level Programming in Scala]
+1. 井字棋(Tic-Tac-Toe) [Type-Level Programming in Scala]
+1. 存在类型（Existential Types）[Thinking with Types: Type-Level Programming in Haskell]
+1. 高阶类型(Higher-kinded Types) [Thinking with Types: Type-Level Programming in Haskell]
+1. 广义代数数据类型(GADTs) [Thinking with Types: Type-Level Programming in Haskell]
+1. 依赖类型(Dependent Types) [Thinking with Types: Type-Level Programming in Haskell]
 
 (关于类型体操这个说法是否有更早的来源，以及它和英文中 Mental Gymnastics 以及在俄语圈中据传是 Alexander Suvorov 所说的"数学是思维的体操(Математика - гимнастика ума)"的关系，暂时无法考证。如果读者有线索，可以联系我们。)
 
@@ -77,7 +77,7 @@ TODO：示意图
 1. Type-challenges。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
 1. Type-gymnastics。包括 URL 解析器、整数大小比较等问题的解答。
 1. HKTS。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
-1. [^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
+1. Effect[^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
 
 在国内的 TypeScript 社区里也有一些非常有教益的文章（集）：
 
@@ -266,7 +266,7 @@ type Apply<f, arguments extends any[]> = 将arguments应用在f上???;
 
 #### 实现高阶类型
 
-在 TypeScript 社区中，也有不少关于高阶类型的研究，其中较新的一个实现来自 [^Effect - Higher-Kinded Types].
+在 TypeScript 社区中，也有不少关于高阶类型的研究，其中较新的一个实现来自 Effect[^Effect - Higher-Kinded Types].
 
 注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
 
