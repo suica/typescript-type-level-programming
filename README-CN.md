@@ -144,11 +144,11 @@ commit(lint(code)); // 正确，不报错
 | 自然数加法 `const add = (a: number, b: number) => a + b`                                              | 元组连接 `type Add<a extends Nat, b extends Nat> = [...a, ...b];`                                                                                                   |
 | 抛出异常 `throw`                                                                                      | 让计算过程返回`never`                                                                                                                                               |
 | 模式匹配 (JavaScript 无此特性)                                                                        | 子类型测试中的类型推导 `arr extends [infer cur, ... infer rest] ? tail : never`                                                                                     |
-| 严格相等 `_.equal(a, b)`                                                                              | `Equal` 泛型 `Equal<a, b>`                                                                                                                                          |
+| 严格相等 `_.equal(a, b)`                                                                              | `Equal` 工具泛型 `Equal<a, b>`                                                                                                                                      |
 | `reduce`实现迭代 `const sum = (nums: number[], init: number)=>nums.reduce((acc,cur)=> acc+cur, init)` | 使用递归泛型模拟迭代过程 `type Sum<arr extends Nat[], result extends Nat = Zero> = arr extends [infer cur, ... infer rest] ? Sum<rest, Add<result, cur>> : result;` |
 | 高阶函数 const apply1 = (f, arg) => f(arg)                                                            | 通过递归替换实现的高阶类型 `type Apply1<f, arg> = $<f, arg>;`                                                                                                       |
 
-注：类型编程的元素一栏中，有些代码块属于类型空间中的句子，因此需要将其声明为一个类型，即在前面加上`type XXX = `才符合 TypeScript 的类型语言语法。
+注：类型编程的元素一栏中，有些代码块并不是完整的，需要将其声明为一个类型，即在前面加上`type XXX = `才符合 TypeScript 的类型语言语法。
 
 #### 通过对占位符进行递归替换实现高阶类型
 
