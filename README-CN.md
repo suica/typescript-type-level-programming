@@ -6,22 +6,20 @@
 
 ## 背景
 
-首先，我们介绍一点关于 TypeScript 类型编程的基本知识:
-
-1. 什么是 TypeScript 的值空间和类型空间
-1. 什么是类型编程
+谈到 TypeScript 类型编程，首先我们需要定义清楚什么是类型编程。
 
 ### TypeScript 的值空间和类型空间
+
+为了定义什么是类型编程，我们需要引入一对概念：值空间和类型空间。
 
 TypeScript 不仅为 JavaScript 引入了一些新的语法和特性，最重要的是附加了一个静态的、强的类型系统，让 JavaScript 代码库也能够得到类型检查和现代化的语言服务。
 TypeScript 的编译器`tsc`在编译代码时，会对代码进行类型检查，擦除 TypeScript 源码上的类型信息并将新语法和特性转译为可被 JavaScript 解释器执行的 JavaScript 代码。
 
 一份典型的 TypeScript 代码，由在编译期和运行时这两个不同时期执行的子语言交织而成。这两个语言分别负责 TypeScript 这门语言的静态语义和动态语义。
 
-1. 类型语言。
-1. 它包括 JavaScript 中不存在的语法成分：如，类型别名关键字`type`和取类型操作符`typeof`，泛型的实例化记号`<>`，`:`和`enum`等。
-1. 它包含独特的语义。由类型检查器所隐式表示的定型规则定义，在编译期通过类型检查器的类型检查被执行。
-1. JavaScript。它在运行时被 JavaScript 运行环境执行的 JavaScript 语言，承担了 TypeScript 的动态语义。
+1. 类型语言。它包括 JavaScript 中不存在的语法成分：如，类型别名关键字`type`和取类型操作符`typeof`，泛型的实例化记号`<>`，`:`和`enum`等。
+   1. 它在编译期通过类型检查器的类型检查被执行，执行规则由类型检查器所隐式表示的定型规则定义。承担了 TypeScript 的静态语义。
+2. JavaScript，姑且称之为值语言。它在运行时被 JavaScript 运行环境执行，承担了 TypeScript 的动态语义。
 
 如下面这份代码中，类型定义`type States = Array<State>;`和类型标注`: States`就是类型语言中的成分，不是合法的 JavaScript 成分，在 JavaScript 中并不存在；
 而`concat([1], [2])`则是 JavaScript 中的成分，不是合法的类型语言中的成分。
@@ -41,10 +39,10 @@ type Result = typeof result;
 
 这两个子语言可以各自独立存在，独立执行。这自然地将 TypeScript 分为了值空间和类型空间。当我们考虑 TypeScript 中的一个项时，它可能仅属于值空间，也可能仅属于类型空间，又或是同时属于类型空间和值空间。例如：
 
-1. 常量`result`仅属于值空间。
-1. 类型`States`仅属于类型空间。
+1. 常量`result`是值，仅属于值空间。
+1. 类型`States`是类型，仅属于类型空间。
 1. 作为类构造器的`Array`，它既是值空间中的函数、类构造器，又是类型语言中的一个泛型类型；
-1. 作为枚举`enum`的`State`，它既是值空间中的一个对象，又是类型语言中的一个枚举类型。
+1. 作为枚举`enum`的`State`，它既是值空间中的一个 Object，又是类型语言中的一个枚举类型。
 
 值空间中的项可以单向地转换为类型空间中的项，例如：
 
@@ -54,7 +52,7 @@ type Result = typeof result;
 
 TODO：示意图
 
-### 类型编程简介
+### 类型编程
 
 类型编程 (Type-level Programming)就是用编程的方式，操作类型空间中的类型。而值编程（Value-level Programming, 即一般的编程），操作的是值空间中的值。
 
@@ -122,7 +120,7 @@ commit(lint(code)); // 正确，不报错
 
 ## 方法
 
-那么，我们应该如何理解类型编程？
+那么，我们应该如何理解 TypeScript 中的类型编程？
 
 ### TypeScript 到其类型系统的嵌入
 
@@ -146,11 +144,100 @@ commit(lint(code)); // 正确，不报错
 | 模式匹配 (JavaScript 无此特性)                                                                        | 子类型测试中的类型推导 `arr extends [infer cur, ... infer rest] ? tail : never`                                                                                     |
 | 严格相等 `_.equal(a, b)`                                                                              | `Equal` 工具泛型 `Equal<a, b>`                                                                                                                                      |
 | `reduce`实现迭代 `const sum = (nums: number[], init: number)=>nums.reduce((acc,cur)=> acc+cur, init)` | 使用递归泛型模拟迭代过程 `type Sum<arr extends Nat[], result extends Nat = Zero> = arr extends [infer cur, ... infer rest] ? Sum<rest, Add<result, cur>> : result;` |
-| 高阶函数 const apply1 = (f, arg) => f(arg)                                                            | 通过递归替换实现的高阶类型 `type Apply1<f, arg> = $<f, arg>;`                                                                                                       |
+| 高阶函数 const apply1 = (f, arg) => f(arg)                                                            | 编码高阶类型 `type Apply1<f, arg> = $<f, arg>;`                                                                                                                     |
 
-注：类型编程的元素一栏中，有些代码块并不是完整的，需要将其声明为一个类型，即在前面加上`type XXX = `才符合 TypeScript 的类型语言语法。
+注：
 
-#### 通过对占位符进行递归替换实现高阶类型
+1. 类型编程的元素一栏中，有些代码块并不是完整的，需要将其声明为一个类型，即在前面加上`type XXX = `才符合 TypeScript 的类型语言语法。
+1. 泛型类型也可以理解为类型层面的函数，因为它接受一些类型返回另外一个类型，正如值空间中的函数接受一些值返回另外一个值。另可称呼为类型函数(Type Functions)、类型构造器(Type Constructors)、类型算子(Type Operators)，本文为了便于理解，采用了泛型类型的称呼。
+
+自然数在 TypeScript 类型编程中的编码极为重要，因此我们着重介绍一下：
+
+我们将自然数类型`Nat`定义为一个长度不定的数组，其中的元素具体是什么类型不重要，这里我们选取字面量类型`1`作为数组元素。
+
+```ts
+type Nat = Array<1>;
+```
+
+这样一来，值空间的这些值都是 `Nat` 类型的：
+
+```ts
+const zero: Nat = [];
+const one: Nat = [1];
+const two: Nat = [1, 1];
+const three: Nat = [1, 1, 1];
+```
+
+`Nat`因为本质上是个 Array，我们若是取其`length`属性，会得到`number`，这也非常合理，因为 Array 的长度是不确定的，我们只知道他是 Length。
+
+```ts
+type Length = Nat['length']; // Length 就是 number
+```
+
+接下来，我们会利用到 TypeScript 类型语言 的另外一个特性：元组。
+
+元组是`Array`的特化形式，最重要的区别就是，元组是定长的：取元组的`length`会得到一个数字字面量类型。
+
+```ts
+type Zero = [];
+type LengthOfZero = Zero['length']; // 得到 0
+type One = [1];
+type LengthOfOne = One['length']; // 得到 1
+type Two = [1, 1];
+type LengthOfTwo = Two['length']; // 得到 2
+```
+
+此时，我们就能够通过元组连接实现自然数加法：
+
+```ts
+type Add<a extends Nat, b extends Nat> = [...a, ...b];
+type Three = Add<One, Two>;
+type LengthOfThree = Three['length'];
+```
+
+另外，我们可以通过条件类型的`infer`关键字得到元组的第一项和去掉这一项的剩余元组。这个操作也非常常用，通常叫作`Head`和`Tail`：
+
+```ts
+type IsNotEmpty<a extends any[]> = a['length'] extends 0 ? false : true;
+type Head<a extends any[]> = a extends [infer head, ...infer tail]
+  ? head
+  : never;
+type Tail<a extends any[]> = a extends [infer head, ...infer tail] ? tail : [];
+```
+
+#### 实现高阶类型
+
+在 TypeScript 的值语言 (即，JavaScript) 中，我们可以构造高阶函数(Higher-order Functions)：也就是输入或者返回值为函数的函数。
+
+```ts
+function fold(nums: number[], f: (acc: number, cur: number) => number): number {
+  let acc = 0;
+  for (const num of nums) {
+    acc = f(acc, num);
+  }
+  return acc;
+}
+```
+
+上面，我们在 TypeScript 中实现了一个`fold`函数。它接受一个数字数组，和一个二元函数，将这个函数应用在"上一次应用的输出和数组的每一项上"，最后把结果返回。
+
+毫无疑问，`fold`函数以函数为参数，因此它是一个高阶函数，像这种高阶函数在 TypeScript 的标准库和实践中比比皆是。
+
+我们的问题是，我们在类型编程中如何使用高阶函数？我们如何将这种结构翻译到类型上？
+
+一个最直接的想法是，既然我们将函数翻译成为了泛型类型，那我们直接将泛型类型作为泛型类型的类型参数传入即可。此时，泛型类型就成了。类型系统的这种能力叫作高阶类型。
+
+很遗憾，在目前的 TypeScript 中，这样的代码无法通过类型检查，因为 TypeScript 本身不支持高阶类型(Higher-kinded Types)，无法把泛型类型的参数(也就是`f`)标记为一个泛型！
+
+```ts
+type Fold<
+  nums extends Nat[],
+  f,
+  acc extends Nat = [],
+> = IsNotEmpty<nums> extends true
+  ? Fold<Tail<nums>, f, f<acc, Head<nums>>> // 报错：Type 'f' is not generic.ts(2315)
+  : acc;
+```
 
 #### TypeScript 子集的定义
 
