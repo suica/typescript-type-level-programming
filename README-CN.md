@@ -126,11 +126,22 @@ commit(lint(code)); // 正确，不报错
 
 ### TypeScript 到其类型系统的嵌入
 
-| 值编程的元素                      | 类型编程的元素                        |
-| --------------------------------- | ------------------------------------- |
-| 常量声明 `const a`                | 类型声明 `type a`                     |
-| 条件语句 `if (a) {b} else {c}`    | 条件类型 `a extends true ? `          |
-| 函数定义 `function A(b: Ty){...}` | 泛型定义 `type A<T extends Ty> = ...` |
+| 值编程的元素                                                                                           | 类型编程的元素                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 常量声明 `const a = ...`                                                                               | 类型声明 `type a = ...`                                                                                                                                               |
+| 条件语句 `if (a) {b} else {c}`                                                                         | 条件类型 `a extends true ? `                                                                                                                                          |
+| 函数定义 `function A(b) {...}`                                                                         | 泛型定义 `type A<T> = ...;`                                                                                                                                           |
+| 函数参数和返回值的类型标注 `function A(b: Ty): C {...}`                                                | 泛型参数类型和返回值类型标注 `type A<T extends Ty, _returns extends C = ...> = _returns;`                                                                             |
+| 函数应用 `A(b)`                                                                                        | 泛型实例化 `A<b>`                                                                                                                                                     |
+| 列表 `[]`                                                                                              | 元组 `[]`                                                                                                                                                             |
+| 列表长度 `[].length`                                                                                   | 元组长度 `[]['length']`                                                                                                                                               |
+| 字面量 `1`                                                                                             | 字面量类型 `type A = 1; type B = '字符串字面量';`                                                                                                                     |
+| 自然数 `0`, `1`, `2`,...                                                                               | 一进制数 `type Nat = 1[]; type Zero = []; type One=[1]; type Two = [1, 1]; ...`                                                                                       |
+| -                                                                                                      | 一进制数转换为字面量类型 `One['length']`                                                                                                                              |
+| 自然数加法 `const add = (a: number, b: number) => a + b`                                               | 元组连接 `type Add<a extends 1[], b extends>`                                                                                                                         |
+| `reduce`实现迭代 `const sum = (nums: number[], init: number)=> nums.reduce((acc,cur)=> acc+cur, init)` | 使用递归泛型模拟迭代过程 `type Sum<arr extends Nat[], result extends Nat = Zero> = arr extends [infer head, ... infer tail] ? Sum<tail, Add<result, head>> : result;` |
+| 实例测试 `instanceof`                                                                                  | 子类型判断 `a extends b ? .. : ...`                                                                                                                                   |
+| 严格相等 `_.equal(a, b)`                                                                               | `Equal` 泛型 `Equal<a, b>`                                                                                                                                            |
 
 #### TypeScript 子集的定义
 
