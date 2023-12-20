@@ -153,13 +153,13 @@ commit(lint(code)); // 正确，不报错
 
 自然数在 TypeScript 类型编程中的编码极为重要，因此我们着重介绍一下：
 
-我们将自然数类型`Nat`定义为一个长度不定的数组，其中的元素具体是什么类型不重要，这里我们选取字面量类型`1`作为数组元素。
+我们将自然数类型`Nat`定义为一个长度不定的数组，其中的元素的类型可以任意选取，这里我们选取`unknown`作为数组元素。
 
 ```ts
-type Nat = Array<1>;
+type Nat = Array<unknown>;
 ```
 
-这样一来，值空间的这些值都是 `Nat` 类型的：
+这样一来，值空间的以下值都是 `Nat` 类型的：
 
 ```ts
 const zero: Nat = [];
@@ -168,10 +168,10 @@ const two: Nat = [1, 1];
 const three: Nat = [1, 1, 1];
 ```
 
-`Nat`因为本质上是个 Array，我们若是取其`length`属性，会得到`number`，这也非常合理，因为 Array 的长度是不确定的，我们只知道他是 Length。
+`Nat`因为本质上是个 Array，我们若是取其`length`属性，会得到`number`，这也非常合理，因为 Array 的长度是不确定的，我们只知道他是个自然数。
 
 ```ts
-type Length = Nat['length']; // Length 就是 number
+type NatLength = Nat['length']; // 得到 number
 ```
 
 接下来，我们会利用到 TypeScript 类型语言 的另外一个特性：元组。
@@ -227,7 +227,7 @@ function fold(nums: number[], f: (acc: number, cur: number) => number): number {
 
 一个最直接的想法是，既然我们将函数翻译成为了泛型类型，那我们直接将泛型类型作为泛型类型的类型参数传入即可。此时，泛型类型就成了。类型系统的这种能力叫作高阶类型。
 
-很遗憾，在目前的 TypeScript 中，这样的代码无法通过类型检查，因为 TypeScript 本身不支持高阶类型(Higher-kinded Types)，无法把泛型类型的参数(也就是`f`)标记为一个泛型！
+很遗憾，在目前的 TypeScript 中，这样的代码无法通过类型检查，因为 TypeScript 本身不支持高阶类型(Higher-kinded Types)，无法把泛型类型的参数(也就是`f`)标记为一个泛型。
 
 ```ts
 type Fold<
@@ -237,6 +237,20 @@ type Fold<
 > = IsNotEmpty<nums> extends true
   ? Fold<Tail<nums>, f, f<acc, Head<nums>>> // 报错：Type 'f' is not generic.ts(2315)
   : acc;
+type Test = Fold<[One, Two], Add>; // 报错：Generic type 'Add' requires 2 type argument(s).ts(2314)
+```
+
+若是要将一个类型作为泛型类型的参数使用，这个类型就必不能是未实例化的泛型，必须是一个具体的类型。
+
+```ts
+type Fold<
+  nums extends Nat[],
+  f,
+  acc extends Nat = [],
+> = IsNotEmpty<nums> extends true
+  ? Fold<Tail<nums>, f, f<acc, Head<nums>>> // 报错：Type 'f' is not generic.ts(2315)
+  : acc;
+type Test = Fold<[One, Two], Add>; // 报错：Generic type 'Add' requires 2 type argument(s).ts(2314)
 ```
 
 #### TypeScript 子集的定义
@@ -271,7 +285,7 @@ type Fold<
 
 可以从`@type-challenges/utils`导入：
 
-```
+```ts
 import type { Expect, Equal } from '@type-challenges/utils';
 ```
 
@@ -335,7 +349,7 @@ TODO: 示意图
 
 若想获得类型检查的过程的观测性数据，可以启用`tsc`的`--diagnostics`标志：
 
-```
+```shell
 tsc --diagnostics
 ```
 

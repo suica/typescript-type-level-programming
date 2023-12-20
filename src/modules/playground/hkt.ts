@@ -79,10 +79,10 @@ const stringify =
       return `number: ${n}`;
     });
 
-interface HKTWithArity<Arity extends number> extends HKT {
+export interface HKTWithArity<Arity extends number> extends HKT {
   readonly TypeArguments: MakeArityConstraint<Arity>;
 }
-type PartialApply<lambda, arguments extends unknown[]> = lambda extends HKT
+export type PartialApply<lambda, arguments extends unknown[]> = lambda extends HKT
   ? arguments['length'] extends 0
     ? EQUALS<lambda['TypeArguments'][number], unknown> extends false
       ? lambda['type']
@@ -141,3 +141,4 @@ type TestApplication = [
     >
   >,
 ];
+
