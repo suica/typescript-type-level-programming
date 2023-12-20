@@ -72,20 +72,22 @@ TODO：示意图
 
 国外社区里：
 
-1. HypeScript[HypeScript]。一个纯由 TypeScript 类型实现的，TypeScript 解析器和类型检查器。
-1. Meta-typing[meta-typing]。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
-1. Type-challenges[Type-Challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
-1. Type-gymnastics[type-gymnastics]。包括 URL 解析器、整数大小比较等问题的解答。
-1. HKTS[HKTS]。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
-1. Effect[Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
+1. HypeScript[^HypeScript]。一个纯由 TypeScript 类型实现的，TypeScript 解析器和类型检查器。
+1. Meta-typing[^meta-typing]。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
+1. Type-challenges[^Type-Challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
+1. Type-gymnastics[^type-gymnastics]。包括 URL 解析器、整数大小比较等问题的解答。
+1. HKTS[^HKTS]。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
+1. Effect[^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
 
-[HypeScript]: https://github.com/ronami/HypeScript
-[meta-typing]: https://github.com/ronami/meta-typing
-[Type-Challenges]: https://github.com/type-challenges/type-challenges
-[type-gymnastics]: https://github.com/g-plane/type-gymnastics
-[HKTS]: https://github.com/pelotom/hkts
-[Effect - Higher-Kinded Types]: https://www.effect.website/docs/behaviour/hkt
-[Effect]: https://github.com/Effect-TS/effect
+[^HypeScript]: https://github.com/ronami/HypeScript
+[^meta-typing]: https://github.com/ronami/meta-typing
+[^Type-Challenges]: https://github.com/type-challenges/type-challenges
+[^type-gymnastics]: https://github.com/g-plane/type-gymnastics
+[^HKTS]: https://github.com/pelotom/hkts
+
+[^Effect - Higher-Kinded Types]: https://www.effect.website/docs/behaviour/hkt
+
+[^Effect]: https://github.com/Effect-TS/effect
 
 在国内的 TypeScript 社区里也有一些非常有教益的文章（集）：
 
