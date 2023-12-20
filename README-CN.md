@@ -77,14 +77,16 @@ TODO：示意图
 
 国外社区里：
 
+1. 《TypeScript 类型系统是图灵完备的》[^TypeScripts-Type-System-is-Turing-Complete]。早期关于 TypeScript 的类型系统的图灵完备性的证明。
 1. HypeScript[^HypeScript]。一个纯由 TypeScript 类型实现的，TypeScript 解析器和类型检查器。
-2. Meta-typing[^meta-typing]。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
-3. Type-challenges[^type-challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
-4. Type-gymnastics[^type-gymnastics]。包括 URL 解析器、整数大小比较等问题的解答。
-5. HKTS[^HKTS]。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
-6. Effect[^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
-7. 国际象棋[^Chesskell]。通过类型编程实现了一个双人国际象棋。
+1. Meta-typing[^meta-typing]。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
+1. Type-challenges[^type-challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
+1. Type-gymnastics[^type-gymnastics]。包括 URL 解析器、整数大小比较等问题的解答。
+1. HKTS[^HKTS]。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
+1. Effect[^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
+1. 国际象棋[^Chesskell]。通过类型编程实现了一个双人国际象棋。
 
+[^TypeScripts-Type-System-is-Turing-Complete]: https://github.com/microsoft/TypeScript/issues/14833
 [^HypeScript]: https://github.com/ronami/HypeScript
 [^meta-typing]: https://github.com/ronami/meta-typing
 [^Type-Challenges]: https://github.com/type-challenges/type-challenges
@@ -446,7 +448,6 @@ Total time:       2.91s
 
 [^Purely-Functional-Data-Structures]: https://www.cs.cmu.edu/~rwh/students/okasaki.pdf
 [^fp-ts]: https://github.com/gcanti/fp-ts
-[^TypeScripts-Type-System-is-Turing-Complete]: https://github.com/microsoft/TypeScript/issues/14833
 [^Type-level-programming-with-match-types]: https://dl.acm.org/doi/10.1145/3498698
 
 [^Generative type abstraction and type-level computation]: https://dl.acm.org/doi/10.1145/1925844.1926411
