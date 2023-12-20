@@ -1,3 +1,19 @@
 {
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "[markdown]": {
+      "editor.unicodeHighlight.ambiguousCharacters": false,
+      "editor.unicodeHighlight.invisibleCharacters": false,
+      "diffEditor.ignoreTrimWhitespace": false,
+      "editor.wordWrap": "on",
+      "editor.quickSuggestions": {
+        "comments": "off",
+        "strings": "on",
+        "other": "on"
+      },
+      "cSpell.fixSpellingWithRenameProvider": true,
+      "cSpell.advanced.feature.useReferenceProviderWithRename": true,
+      "cSpell.advanced.feature.useReferenceProviderRemove": "/^#+\\s/",
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    }
 }
