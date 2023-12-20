@@ -1,4 +1,4 @@
-import { type Expect } from '@type-challenges/utils';
+import {type Expect } from '@type-challenges/utils';
 import { TAIL } from '../vm/utils/helper';
 import { EQUALS } from '../vm/utils/nat';
 
@@ -147,12 +147,21 @@ type TestApplication = [
   >,
 ];
 
-
-
 interface TreeHKT extends HKTWithArity<1> {
-  type: [this['TypeArguments']['0'], this['type'][]]
+  type: this extends infer A extends this ? { value: A['TypeArguments']['0'], nodes: A['type'][] } : never;
 }
 
-// @ts-expect-error Type instantiation is excessively deep and possibly infinite.ts(2589)
 type NumberTreeHKTInstance = PartialApply<TreeHKT, [number]>
 //   ^?
+
+declare const tree: NumberTreeHKTInstance;
+
+const value = tree.nodes[0]?.nodes[0]?.nodes[0]?.nodes[0]?.nodes[0];
+
+type NumberTree = {value: number, nodes: NumberTree[]};
+
+type TestRecursive = [
+  Expect<EQUALS<PartialApply<TreeHKT, [number]>, NumberTree>>,
+  Expect<EQUALS<typeof value, NumberTreeHKTInstance | undefined>>,
+  Expect<EQUALS<typeof tree, NumberTreeHKTInstance>>,
+];

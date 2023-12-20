@@ -2,7 +2,9 @@
 
 ## 简介
 
-<!-- TODO -->
+文本试图说明：值编程和类型编程在本质上没有什么区别，TypeScript 的类型编程仅仅是在 TypeScript 类型空间中的编程。
+
+通过建立 TypeScript 类型编程和值编程的对应关系，开发者可以很容易地掌握 TypeScript 类型编程。
 
 ## 背景
 
@@ -105,7 +107,7 @@ type Result = typeof result;
 
 国外社区里：
 
-1. 《TypeScript 类型系统是图灵完备的》[^TypeScripts-Type-System-is-Turing-Complete]。早期关于 TypeScript 的类型系统的图灵完备性的讨论，是理解 TypeScript 类型编程绕不开的一篇文章。
+1. TypeScript's Type System is Turing Complete[^TypeScripts-Type-System-is-Turing-Complete]。早期关于 TypeScript 的类型系统的图灵完备性的讨论，是理解 TypeScript 类型编程绕不开的一篇文章。
 1. HypeScript[^HypeScript]。一个纯由 TypeScript 类型实现的，TypeScript 解析器和类型检查器。
 1. Meta-typing[^meta-typing]。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
 1. Type-challenges[^type-challenges]。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
@@ -437,29 +439,37 @@ interface BetterAddHKT extends HKTWithArity<2> {
 }
 ```
 
-目前为止，我们得到了一个比较完善的实现。这个实现仍有一些值得改进的点，但是我们已经基本上达到我们的目的了。
-
-1. 处理递归的 HKT 的时候，会出现实例化过深的错误。考虑树的例子，其中`NumberTree`是一个参考实现：
+另外，它可以支持递归。
 
 ```ts
 interface TreeHKT extends HKTWithArity<1> {
-  type: [this['TypeArguments']['0'], this['type'][]];
+  type: this extends infer A extends this
+    ? { value: A['TypeArguments']['0']; nodes: A['type'][] }
+    : never;
 }
-type NumberTree = [number, NumberTree[]];
-type TestTreeHKT = [Expect<Equal<PartialApply<TreeHKT, [number]>, NumberTree>>];
 
-// @ts-expect-error Type instantiation is excessively deep and possibly infinite.ts(2589)
 type NumberTreeHKTInstance = PartialApply<TreeHKT, [number]>;
-//   ^? // [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [...][]][]][]][]][]][]][]][]][]][]][]][]][]][]][]][]][]]
+//   ^?
+
+declare const tree: NumberTreeHKTInstance;
+
+const value = tree.nodes[0]?.nodes[0]?.nodes[0]?.nodes[0]?.nodes[0];
+
+type NumberTree = { value: number; nodes: NumberTree[] };
+type TestRecursive = [
+  Expect<EQUALS<PartialApply<TreeHKT, [number]>, NumberTree>>,
+  Expect<EQUALS<typeof value, NumberTreeHKTInstance | undefined>>,
+  Expect<EQUALS<typeof tree, NumberTreeHKTInstance>>,
+];
 ```
 
-可以发现不仅`TestTreeHKT`报错，`NumberTreeHKTInstance`还出现了实例化过多的错误。在之后要解决这个问题，我们会考虑引入 indirection，避免一次性把无穷深度的树全部实例化出来。
+目前为止，我们得到了一个比较完善的实现。这个实现仍有一些值得改进的点，但是我们已经基本上达到我们的目的了。
 
 1. 仍然依赖`Assert`进行类型断言。我们可以考虑引入类型参数的参考数组，保证每一个类型参数都是参考数组对应位置上元素的子类型。
 
 [^Effect-Higher-Kinded-Types]: https://www.effect.website/docs/behaviour/hkt
 
-> 注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现 HKT [^HKTS]。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
+> 注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现 HKT [^HKTS]。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。此外，HKTS 的方法不支持递归数据类型。
 
 #### TypeScript 子集的定义
 
@@ -471,7 +481,7 @@ type NumberTreeHKTInstance = PartialApply<TreeHKT, [number]>;
 1. 函数纯净。支持高阶函数作为函数的参数，但是函数不可以引用自由变量；自定义的函数不存在副作用。
 1. 语法简单。保持语法尽量少，在实现翻译器的时候不必处理过多的语法。处理边界情况不是我们关心的。
 
-### 设计翻译器实现嵌入
+### 翻译器的设计
 
 ### 类型编程的配套设施
 
