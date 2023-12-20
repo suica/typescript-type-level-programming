@@ -1,8 +1,8 @@
 {
-  "name": "type-as-an-object-language",
+  "name": "typescript-type-level-programming",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:suica/type-as-an-object-language.git",
+  "repository": "git@github.com:suica/typescript-type-level-programming.git",
   "author": "Sg <suica@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {
