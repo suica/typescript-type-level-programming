@@ -83,6 +83,7 @@ TODO：示意图
 4. Type-gymnastics[^type-gymnastics]。包括 URL 解析器、整数大小比较等问题的解答。
 5. HKTS[^HKTS]。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
 6. Effect[^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
+7. 国际象棋[^Chesskell]。通过类型编程实现了一个双人国际象棋。
 
 [^HypeScript]: https://github.com/ronami/HypeScript
 [^meta-typing]: https://github.com/ronami/meta-typing
@@ -90,13 +91,14 @@ TODO：示意图
 [^type-gymnastics]: https://github.com/g-plane/type-gymnastics
 [^HKTS]: https://github.com/pelotom/hkts
 [^Effect]: https://github.com/Effect-TS/effect
+[^Chesskell]: https://dl.acm.org/doi/10.1145/3471874.3472987
 
 在国内的 TypeScript 社区里也有一些非常有教益的文章（集）：
 
 1. 中国象棋[^type-chess]。如何通过类型编程实现一个中国象棋。
 2. Lisp 解释器[^lisp-interpreter]。
-3. "来玩 TypeScript 啊，机都给你开好了！"[^zhihu-typescript]。是一个知乎上的 TypeScript 专栏。
-4. 《Effective TypeScript：使用 TypeScript 的 n 个技巧》[^effective-ts-zhihu]。
+3. 《Effective TypeScript：使用 TypeScript 的 n 个技巧》[^effective-ts-zhihu]。
+4. "来玩 TypeScript 啊，机都给你开好了！"[^zhihu-typescript]。是一个知乎上的 TypeScript 专栏。
 
 [^type-chess]: https://github.com/chinese-chess-everywhere/type-chess
 [^lisp-interpreter]: https://zhuanlan.zhihu.com/p/427309936
@@ -442,12 +444,11 @@ Total time:       2.91s
 
 ## 参考文献
 
-[^Purely Functional Data Structures]: https://www.cs.cmu.edu/~rwh/students/okasaki.pdf
+[^Purely-Functional-Data-Structures]: https://www.cs.cmu.edu/~rwh/students/okasaki.pdf
 [^fp-ts]: https://github.com/gcanti/fp-ts
-[^TypeScripts Type System is Turing Complete]: https://github.com/microsoft/TypeScript/issues/14833
+[^TypeScripts-Type-System-is-Turing-Complete]: https://github.com/microsoft/TypeScript/issues/14833
+[^Type-level-programming-with-match-types]: https://dl.acm.org/doi/10.1145/3498698
 
-[^Type-level programming with match types]: https://dl.acm.org/doi/10.1145/3498698
 [^Generative type abstraction and type-level computation]: https://dl.acm.org/doi/10.1145/1925844.1926411
 [^Refinement kinds: type-safe programming with practical type-level computation]: https://dl.acm.org/doi/10.1145/3360557
 [^Refinement types for TypeScript]: https://dl.acm.org/doi/10.1145/2908080.2908110
-[^Chesskell: a two-player game at the type level]: https://dl.acm.org/doi/10.1145/3471874.3472987
