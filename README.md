@@ -80,10 +80,6 @@ type Result = typeof result;
 
 1. 通过类型语言中的`typeof`运算符，我们可以获取一个值空间中的符号的类型，得到的类型仅存在于值空间。在 TypeScript 中，仅存在于类型空间的项无法对值空间产生影响。
 
-以上这些概念可以通过下图概括：
-
-(示意图)
-
 ### 类型编程
 
 类型编程 (Type-level Programming)就是用编程的方式，操作类型空间中的类型。而值编程（Value-level Programming, 即一般的编程），操作的是值空间中的值。
