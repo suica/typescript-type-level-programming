@@ -205,7 +205,7 @@ type Head<a extends any[]> = a extends [infer head, ...infer tail]
 type Tail<a extends any[]> = a extends [infer head, ...infer tail] ? tail : [];
 ```
 
-#### 实现高阶类型
+#### 高阶类型的困境
 
 在 TypeScript 的值语言 (即，JavaScript) 中，我们可以构造高阶函数(Higher-order Functions)：也就是输入或者返回值为函数的函数。
 
@@ -240,7 +240,7 @@ type Fold<
 type Test = Fold<[One, Two], Add>; // 报错：Generic type 'Add' requires 2 type argument(s).ts(2314)
 ```
 
-若是要将一个类型作为泛型类型的参数使用，这个类型就必不能是未实例化的泛型，必须是一个具体的类型。
+若是要将一个类型作为泛型类型的参数使用，这个类型就必不能是未实例化的泛型，必须是一个具体的类型。也就是说，我们需要把代码改成如下样子：
 
 ```ts
 type Fold<
@@ -248,10 +248,21 @@ type Fold<
   f,
   acc extends Nat = [],
 > = IsNotEmpty<nums> extends true
-  ? Fold<Tail<nums>, f, f<acc, Head<nums>>> // 报错：Type 'f' is not generic.ts(2315)
+  ? Fold<Tail<nums>, f, Apply<f, [acc, Head<nums>]>>
   : acc;
-type Test = Fold<[One, Two], Add>; // 报错：Generic type 'Add' requires 2 type argument(s).ts(2314)
+type Test = Fold<[One, Two], AddHKT>;
+// @ts-expect-error
+type AddHKT = Add的无参数版，里面包含两个隐式的占位符?;
+// @ts-expect-error
+type Apply<f, arguments extends any[]> = 将arguments应用在f上???;
 ```
+
+现在，让我们整理一下目标：
+
+1. 找到一种将`Add`转换为`AddHKT`的方法。
+2. 实现`Apply`。
+
+#### 实现高阶类型
 
 #### TypeScript 子集的定义
 
