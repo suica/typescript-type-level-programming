@@ -11,8 +11,6 @@ type MakeArityConstraint<
   ? unknown[]
   : T extends 0
   ? []
-  : T extends 1
-  ? [unknown]
   : EQUALS<T, res_nat['length']> extends true
   ? res_nat
   : MakeArityConstraint<T, [unknown, ...res_nat]>;
@@ -134,6 +132,7 @@ type TestApplication = [
   Expect<
     EQUALS<PartialApply<MapHKT, [string, number, string]>, Map<string, number>>
   >,
+  Expect<EQUALS<PartialApply<number, []>, number>>,
   Expect<
     EQUALS<
       PartialApply<PartialApply<MapHKT, [string]>, [number]>,
