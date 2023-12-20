@@ -1,6 +1,6 @@
 import { HKTWithArity, PartialApply } from './hkt';
 
-type Nat = Array<1>;
+type Nat = Array<unknown>;
 type IsNotEmpty<a extends any[]> = a['length'] extends 0 ? false : true;
 type Head<a extends any[]> = a extends [infer head, ...infer tail]
   ? head

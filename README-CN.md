@@ -317,6 +317,63 @@ type Apply<f, arguments extends any[]> = 将arguments应用在f上???;
 
 在 TypeScript 社区中，也有不少关于高阶类型的研究，其中较新的一个实现来自 Effect [^Effect-Higher-Kinded-Types].
 
+下面定义了`HKT`这个 interface，用来表示有两个类型参数的泛型。可以看到，其`In1`和`In2`都是`unknown`类型的。
+
+```ts
+interface HKT {
+  readonly In1: unknown;
+  readonly In2: unknown;
+}
+```
+
+`Apply`是一个泛型类型，接受一个`HKT`，和两个类型参数，负责将参数应用上去。
+
+```ts
+type Apply<F extends HKT, In1, In2> = F extends {
+  readonly type: unknown;
+}
+  ? (F & {
+      readonly In1: In1;
+      readonly In2: In2;
+    })['type']
+  : never;
+```
+
+最后是这个方法的关键，`AddHKT`的实现：
+
+```ts
+interface BasicAddHKT extends HKT {
+  // @ts-expect-error Type 'this["In1"]' does not satisfy the constraint 'Nat'.ts(2344)
+  type: Add<this['In1'], this['In2']>;
+}
+type BasicAddHKT = Expect<Equal<Apply<AddHKT, [1], [1, 1]>['length'], 3>>;
+```
+
+其实现思路有如下要点：
+
+1. 利用了`interface`具有类型上的`this`的特性，通过在`Apply`中增加对`In1`和`In2`的约束，让`In1`和`In2`从`unknown`变为传入的类型。
+1. 利用了顶类型`unknown`的吸收性质：对于任意的类型`A`，`unknown & A`都是`A`本身。
+
+这个实现基本解决了 HKT 的问题，但是仍然存在一些不足：
+
+1. 无法通过类型检查。`Add`要求两个类型参数都是`Nat`的子类型，但是`BasicAddHKT`并没有办法保证这点。
+2. 泛型类型的元数是固定的。对`BasicAddHKT`来说，它是一个 2 元的泛型类型，需要接受 2 个类型参数才能实例化。那么，对其他元数的泛型类型，我们就无法复用 HKT。
+3. 不支持部分应用(Partial Application)而必须一次性传入所有的类型参数。它对应于值编程中的柯里化函数。
+
+我们可以对它进行改进：
+
+1. 利用`Assert`工具类型，将输入的类型参数`In1`和`In2`限制为`Nat`，消除不合法的路径。
+1. 改造`Apply`得到`PartialApply`，使其支持部分应用。
+1. 改造`HKT`类，并提供工具类型`HKTWithArity`，使其支持任意元数。
+
+```ts
+type Assert<T, P> = T extends P ? T : /* T若非P的子类型就报错 */ never;
+interface AddHKT extends HKT {
+  type: Add<Assert<this['In1'], Nat>, Assert<this['In2'], Nat>>; // 没有类型错误了
+}
+type TestAddHKT = Apply<AddHKT, [1], [1, 1]>['length'];
+```
+
 [^Effect-Higher-Kinded-Types]: https://www.effect.website/docs/behaviour/hkt
 
 > 注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
