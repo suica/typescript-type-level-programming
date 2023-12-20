@@ -290,9 +290,9 @@ type Apply<f, arguments extends any[]> = 将arguments应用在f上???;
 
 #### 实现高阶类型
 
-在 TypeScript 社区中，也有不少关于高阶类型的研究，其中较新的一个实现来自 Effect[^Effect - Higher-Kinded Types].
+在 TypeScript 社区中，也有不少关于高阶类型的研究，其中较新的一个实现来自 Effect [^Effect-Higher-Kinded-Types].
 
-[^Effect - Higher-Kinded Types]: https://www.effect.website/docs/behaviour/hkt
+[^Effect-Higher-Kinded-Types]: https://www.effect.website/docs/behaviour/hkt
 
 注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
 
