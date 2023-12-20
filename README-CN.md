@@ -50,7 +50,7 @@ type Result = typeof result;
 
 以上这些概念可以通过下图概括：
 
-TODO：示意图
+(示意图)
 
 ### 类型编程
 
@@ -117,12 +117,11 @@ TODO：示意图
 
 而对库设计的场景来说，一个有一定复杂度的类型带来的很可能是类型安全的接口和开发者良好的补全体验，更不用说能够把许多潜在的错误在编译期暴露出来了。举个例子，若是 Vue 2 在一开始就通过类型编程提供完善的类型定义，甚至为了类型安全反过来约束框架本身的设计，那么开发者就不必在使用 TypeScript 时面对满屏幕的 any 了，也能够将一些不合法的调用拦在编译期。
 
-再考虑业务开发的场景。假定我们需要写一个流程管理逻辑，由多个函数组成。我们必须要按照一定的顺序来组织这些流程。这就非常适合使用类型编程。例子如下[^write-you-a-typescript]：
+再考虑业务开发的场景。假定我们需要写一个流程管理逻辑，由多个函数组成。我们必须要按照一定的顺序来组织这些流程。这就非常适合使用类型编程。例子改编自[^write-you-a-typescript]：
 
 [^write-you-a-typescript]: https://github.com/suica/write-you-a-typescript
 
 ```ts
-// 例子来自 TODO: ref
 type Code = { fileList: string[]; addedTime: Date };
 declare const LintInternalSymbol: unique symbol;
 type Linted<T> = T & { [LintInternalSymbol]: undefined };
@@ -390,7 +389,7 @@ tsc --noEmit
 
 [^vscode-comment-queries]: https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries
 
-TODO: 示意图
+(示意图)
 
 #### 性能诊断
 
