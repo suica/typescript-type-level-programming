@@ -393,9 +393,9 @@ type PartialApply<lambda, arguments extends unknown[]> = lambda extends HKT
     : PartialApply<Kind<lambda, arguments[0]>, TAIL<arguments>>
   : lambda;
 type TestApplication = [
-  Expect<EQUALS<PartialApply<number, []>, number>>,
+  Expect<Equal<PartialApply<number, []>, number>>,
   Expect<
-    EQUALS<
+    Equal<
       PartialApply<PartialApply<MapHKT, [string]>, [number]>,
       Map<string, number>
     >
@@ -409,18 +409,18 @@ type TestApplication = [
 type MakeArityConstraint<
   T extends number,
   res_nat extends unknown[] = [],
-> = EQUALS<T, number> extends true
+> = Equal<T, number> extends true
   ? unknown[]
   : T extends 0
   ? []
-  : EQUALS<T, res_nat['length']> extends true
+  : Equal<T, res_nat['length']> extends true
   ? res_nat
   : MakeArityConstraint<T, [unknown, ...res_nat]>;
 
 type TestMakeArityConstraint = [
-  Expect<EQUALS<MakeArityConstraint<0>, []>>,
-  Expect<EQUALS<MakeArityConstraint<1>, [unknown]>>,
-  Expect<EQUALS<MakeArityConstraint<2>, [unknown, unknown]>>,
+  Expect<Equal<MakeArityConstraint<0>, []>>,
+  Expect<Equal<MakeArityConstraint<1>, [unknown]>>,
+  Expect<Equal<MakeArityConstraint<2>, [unknown, unknown]>>,
 ];
 
 interface HKTWithArity<Arity extends number> extends HKT {
@@ -457,9 +457,9 @@ const value = tree.nodes[0]?.nodes[0]?.nodes[0]?.nodes[0]?.nodes[0];
 
 type NumberTree = { value: number; nodes: NumberTree[] };
 type TestRecursive = [
-  Expect<EQUALS<PartialApply<TreeHKT, [number]>, NumberTree>>,
-  Expect<EQUALS<typeof value, NumberTreeHKTInstance | undefined>>,
-  Expect<EQUALS<typeof tree, NumberTreeHKTInstance>>,
+  Expect<Equal<PartialApply<TreeHKT, [number]>, NumberTree>>,
+  Expect<Equal<typeof value, NumberTreeHKTInstance | undefined>>,
+  Expect<Equal<typeof tree, NumberTreeHKTInstance>>,
 ];
 ```
 
