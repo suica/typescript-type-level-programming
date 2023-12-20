@@ -58,17 +58,16 @@ TODO：示意图
 
 类型编程在函数式编程语言社区由来已久，人们对 Haskell 和 Scala 的类型编程就有深入的研究，因为它们有着较强的静态类型系统。早在 2006 年，一个 Haskell Wiki 的页面中(ref)，就已经在使用 Type Gymnastics(类型体操)来指代那些复杂烧脑的类型操作。下面列举了这些社区中一些常见的类型编程主题：
 
-1. Church 编码 [^type-level-programming-haskell] [^Type-Level Programming in Scala]
-1. Peano 数所构建的自然数类型，及其上的递归函数和算术 [^type-level-programming-haskell] [^Type-Level Programming in Scala]
-1. 井字棋(Tic-Tac-Toe) [^Type-Level Programming in Scala]
-1. 存在类型（Existential Types）[^type-level-programming-haskell]
-1. 高阶类型(Higher-kinded Types) [^type-level-programming-haskell]
-1. 广义代数数据类型(GADTs) [^type-level-programming-haskell]
-1. 依赖类型(Dependent Types) [^type-level-programming-haskell]
+1. Church 编码 [^thinking-with-types] [^type-level-programming-in-scala]
+1. Peano 数所构建的自然数类型，及其上的递归函数和算术 [^thinking-with-types] [^type-level-programming-in-scala]
+1. 井字棋(Tic-Tac-Toe) [^type-level-programming-in-scala]
+1. 存在类型（Existential Types）[^thinking-with-types]
+1. 高阶类型(Higher-kinded Types) [^thinking-with-types]
+1. 广义代数数据类型(GADTs) [^thinking-with-types]
+1. 依赖类型(Dependent Types) [^thinking-with-types]
 
-[^type-level-programming-haskell]: https://leanpub.com/thinking-with-types
-
-[^Type-Level Programming in Scala]: https://apocalisp.wordpress.com/2010/06/08/type-level-programming-in-scala/
+[^thinking-with-types]: https://leanpub.com/thinking-with-types
+[^type-level-programming-in-scala]: https://apocalisp.wordpress.com/2010/06/08/type-level-programming-in-scala/
 
 (关于类型体操这个说法是否有更早的来源，以及它和英文中 Mental Gymnastics 以及在俄语圈中据传是 Alexander Suvorov 所说的"数学是思维的体操(Математика - гимнастика ума)"的关系，暂时无法考证。如果读者有线索，可以联系我们。)
 
