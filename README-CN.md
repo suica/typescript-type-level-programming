@@ -76,8 +76,8 @@ TODO：示意图
 1. Meta-typing。收集了非常多类型编程的例子，包括排序（插入、快速、归并）、数据结构（列表、二叉树）、自然数算术以及一些谜题（迷宫、N 皇后）等等。
 1. Type-challenges。一个带有在线判题功能的，具有难度标记的 TypeScript 类型编程习题集。包括简单到中等的常用的工具类型（`Awaited`、`Camelize`）的实现，和一些比较困难的问题（`Vue`的 this 类型，整数大小比较，`JSON`解析器）。这个仓库包括了几乎所有 TypeScript 类型编程可能用到的知识和技巧，可以当成类型编程的速查表使用。
 1. Type-gymnastics。包括 URL 解析器、整数大小比较等问题的解答。
-1. Effect-ts。通过类型编程实现类型安全的副作用管理。
 1. HKTS。在 TypeScript 的类型系统中编码高阶类型。关于高阶类型是什么，我们之后会讨论。
+1. [^Effect]。通过类型编程实现类型安全的副作用管理。其中也使用到了高阶类型。
 
 在国内的 TypeScript 社区里也有一些非常有教益的文章（集）：
 
@@ -225,9 +225,9 @@ function fold(nums: number[], f: (acc: number, cur: number) => number): number {
 
 我们的问题是，我们在类型编程中如何使用高阶函数？我们如何将这种结构翻译到类型上？
 
-一个最直接的想法是，既然我们将函数翻译成为了泛型类型，那我们直接将泛型类型作为泛型类型的类型参数传入即可。此时，泛型类型就成了。类型系统的这种能力叫作高阶类型。
+一个最直接的想法是，既然我们将函数翻译成为了泛型类型，那我们直接将泛型类型作为泛型类型的类型参数传入即可。此时，泛型类型就成了接受泛型类型的类型。类型系统的这种能力叫作高阶类型(Higher-kinded Types, HKT)。
 
-很遗憾，在目前的 TypeScript 中，这样的代码无法通过类型检查，因为 TypeScript 本身不支持高阶类型(Higher-kinded Types)，无法把泛型类型的参数(也就是`f`)标记为一个泛型。
+很遗憾，在目前的 TypeScript 中，这样的代码无法通过类型检查，因为 TypeScript 本身不支持 HKT，无法把泛型类型的参数(也就是`f`)标记为一个泛型，也不支持将未实例化的泛型传来传去。
 
 ```ts
 type Fold<
@@ -262,7 +262,13 @@ type Apply<f, arguments extends any[]> = 将arguments应用在f上???;
 1. 找到一种将`Add`转换为`AddHKT`的方法。
 2. 实现`Apply`。
 
+完成了这两个目标，我们就成功地构造出了高阶类型，也就可以在类型编程中自由地传递泛型了。
+
 #### 实现高阶类型
+
+在 TypeScript 社区中，也有不少关于高阶类型的研究，其中较新的一个实现来自 [^Effect - Higher-Kinded Types].
+
+注：HKTS 使用占位符实例化泛型，再对实例递归替换占位符来实现。这种思路是无法用在`Add`上的。因为 Add 在`[...a, ...b]`时会尝试将占位符`a`和`b`展开，此时会得到`any[]`，导致后续进行递归替换的时候找不到占位符。
 
 #### TypeScript 子集的定义
 
@@ -408,24 +414,27 @@ Total time:       2.91s
 
 ## 参考文献
 
-1. [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
-1. [Purely Functional Data Structures](https://www.cs.cmu.edu/~rwh/students/okasaki.pdf)
-1. [fp-ts](https://github.com/gcanti/fp-ts)
-1. [Effective TypeScript：使用 TypeScript 的 n 个技巧](https://zhuanlan.zhihu.com/p/104311029)
-1. [Type-Challenges](https://github.com/type-challenges/type-challenges)
-1. [hkts](https://github.com/pelotom/hkts)
-1. [HypeScript](https://github.com/ronami/HypeScript)
-1. [TypeScripts Type System is Turing Complete](https://github.com/microsoft/TypeScript/issues/14833)
-1. [write-you-a-typescript](https://github.com/suica/write-you-a-typescript)
-1. [type-gymnastics](https://github.com/g-plane/type-gymnastics)
-1. [Thinking with Types: Type-Level Programming in Haskell](https://leanpub.com/thinking-with-types)
-1. [type-chess](https://github.com/chinese-chess-everywhere/type-chess)
-1. [vscode-comment-queries](https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries)
-1. [Type-Level Programming in Scala](https://apocalisp.wordpress.com/2010/06/08/type-level-programming-in-scala/)
-1. [Type-level programming with match types](https://dl.acm.org/doi/10.1145/3498698)
-1. [Generative type abstraction and type-level computation](https://dl.acm.org/doi/10.1145/1925844.1926411)
-1. [Refinement kinds: type-safe programming with practical type-level computation](https://dl.acm.org/doi/10.1145/3360557)
-1. [Refinement types for TypeScript](https://dl.acm.org/doi/10.1145/2908080.2908110)
-1. [Chesskell: a two-player game at the type level](https://dl.acm.org/doi/10.1145/3471874.3472987)
-1. [OOP vs type classes](https://wiki.haskell.org/OOP_vs_type_classes)
-1. [来玩 TypeScript 啊，机都给你开好了！](https://www.zhihu.com/column/c_206498766)
+[TypeScript Handbook]: https://www.typescriptlang.org/docs/handbook/intro.html
+[Purely Functional Data Structures]: https://www.cs.cmu.edu/~rwh/students/okasaki.pdf
+[fp-ts]: https://github.com/gcanti/fp-ts
+[Effective TypeScript：使用 TypeScript 的 n 个技巧]: https://zhuanlan.zhihu.com/p/104311029
+[Type-Challenges]: https://github.com/type-challenges/type-challenges
+[HKTS]: https://github.com/pelotom/hkts
+[HypeScript]: https://github.com/ronami/HypeScript
+[TypeScripts Type System is Turing Complete]: https://github.com/microsoft/TypeScript/issues/14833
+[write-you-a-typescript]: https://github.com/suica/write-you-a-typescript
+[type-gymnastics]: https://github.com/g-plane/type-gymnastics
+[Thinking with Types: Type-Level Programming in Haskell]: https://leanpub.com/thinking-with-types
+[type-chess]: https://github.com/chinese-chess-everywhere/type-chess
+[vscode-comment-queries]: https://marketplace.visualstudio.com/items?itemName=YiJie.vscode-comment-queries
+[Type-Level Programming in Scala]: https://apocalisp.wordpress.com/2010/06/08/type-level-programming-in-scala/
+[Type-level programming with match types]: https://dl.acm.org/doi/10.1145/3498698
+[Generative type abstraction and type-level computation]: https://dl.acm.org/doi/10.1145/1925844.1926411
+[Refinement kinds: type-safe programming with practical type-level computation]: https://dl.acm.org/doi/10.1145/3360557
+[Refinement types for TypeScript]: https://dl.acm.org/doi/10.1145/2908080.2908110
+[Chesskell: a two-player game at the type level]: https://dl.acm.org/doi/10.1145/3471874.3472987
+[OOP vs type classes]: https://wiki.haskell.org/OOP_vs_type_classes
+[来玩 TypeScript 啊，机都给你开好了！]: https://www.zhihu.com/column/c_206498766
+
+[^Effect - Higher-Kinded Types]: https://www.effect.website/docs/behaviour/hkt
+[^Effect]: https://github.com/Effect-TS/effect
