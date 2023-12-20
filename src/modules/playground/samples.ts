@@ -28,8 +28,8 @@ type TestBadFold = BadFold<[One, Two], Add>;
 type Assert<T, P> = T extends P ? T : never;
 export interface AddHKT extends HKTWithArity<2> {
   type: Add<
-    Assert<this['TypeArguments'][0], Nat>,
-    Assert<this['TypeArguments'][1], Nat>
+    Assert<this['TypeArguments']['0'], Nat>,
+    Assert<this['TypeArguments']['1'], Nat>
   >;
 }
 

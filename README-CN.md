@@ -431,11 +431,31 @@ interface HKTWithArity<Arity extends number> extends HKT {
 ```ts
 interface BetterAddHKT extends HKTWithArity<2> {
   type: Add<
-    Assert<this['TypeArguments'][0], Nat>,
-    Assert<this['TypeArguments'][1], Nat>
+    Assert<this['TypeArguments']['0'], Nat>,
+    Assert<this['TypeArguments']['1'], Nat>
   >;
 }
 ```
+
+目前为止，我们得到了一个比较完善的实现。这个实现仍有一些值得改进的点，但是我们已经基本上达到我们的目的了。
+
+1. 处理递归的 HKT 的时候，会出现实例化过深的错误。考虑树的例子，其中`NumberTree`是一个参考实现：
+
+```ts
+interface TreeHKT extends HKTWithArity<1> {
+  type: [this['TypeArguments']['0'], this['type'][]];
+}
+type NumberTree = [number, NumberTree[]];
+type TestTreeHKT = [Expect<Equal<PartialApply<TreeHKT, [number]>, NumberTree>>];
+
+// @ts-expect-error Type instantiation is excessively deep and possibly infinite.ts(2589)
+type NumberTreeHKTInstance = PartialApply<TreeHKT, [number]>;
+//   ^? // [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [number, [...][]][]][]][]][]][]][]][]][]][]][]][]][]][]][]][]][]]
+```
+
+可以发现不仅`TestTreeHKT`报错，`NumberTreeHKTInstance`还出现了实例化过多的错误。在之后要解决这个问题，我们会考虑引入 indirection，避免一次性把无穷深度的树全部实例化出来。
+
+1. 仍然依赖`Assert`进行类型断言。我们可以考虑引入类型参数的参考数组，保证每一个类型参数都是参考数组对应位置上元素的子类型。
 
 [^Effect-Higher-Kinded-Types]: https://www.effect.website/docs/behaviour/hkt
 

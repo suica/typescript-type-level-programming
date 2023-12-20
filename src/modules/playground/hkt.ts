@@ -147,3 +147,12 @@ type TestApplication = [
   >,
 ];
 
+
+
+interface TreeHKT extends HKTWithArity<1> {
+  type: [this['TypeArguments']['0'], this['type'][]]
+}
+
+// @ts-expect-error Type instantiation is excessively deep and possibly infinite.ts(2589)
+type NumberTreeHKTInstance = PartialApply<TreeHKT, [number]>
+//   ^?
