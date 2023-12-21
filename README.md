@@ -80,7 +80,6 @@ type Result = typeof result;
 
 1. 通过类型语言中的`typeof`运算符，我们可以获取一个值空间中的符号的类型，得到的类型仅存在于值空间。在 TypeScript 中，仅存在于类型空间的项无法对值空间产生影响。
 
-
 ![Overview](./assets/overview.png)
 
 ### 类型编程
@@ -276,7 +275,7 @@ Total time:       2.91s
 | 模式匹配 (JavaScript 无此特性)                                                                        | 子类型测试中的类型推导 `arr extends [infer cur, ... infer rest] ? tail : never`                                                                                     |
 | 严格相等 `_.equal(a, b)`                                                                              | `Equal` 工具泛型 `Equal<a, b>`                                                                                                                                      |
 | `reduce`实现迭代 `const sum = (nums: number[], init: number)=>nums.reduce((acc,cur)=> acc+cur, init)` | 使用递归泛型模拟迭代过程 `type Sum<arr extends Nat[], result extends Nat = Zero> = arr extends [infer cur, ... infer rest] ? Sum<rest, Add<result, cur>> : result;` |
-| 高阶函数 const apply1 = (f, arg) => f(arg)                                                            | 编码高阶类型 `type Apply1<f, arg> = $<f, arg>;`                                                                                                                     |
+| 高阶函数 const apply = (f, arg) => f(arg)                                                             | 编码高阶类型 `type Apply<f, arg> = 将泛型f以arg为参数进行实例化;`                                                                                                                 |
 
 > 注：
 >
